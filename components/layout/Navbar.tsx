@@ -1,123 +1,146 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useState, useEffect } from "react";
-import { User, Menu, X, LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import { Menu, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
+import Image from 'next/image';
 
-const Navbar = () => {
-  const router = useRouter();
+const navLinks = [
+  { name: 'Home', href: '/' },
+  { name: 'Services', href: '/services' },
+  { name: 'About', href: '/about' }, 
+   { name: 'Careers', href: '/careers' },
 
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userFirstName, setUserFirstName] = useState("User");
+  { name: 'Testimonials', href: '/#testimonials' },
+  { name: 'Contact', href: '/#contact' },
+];
+
+export default function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
-    const token = localStorage.getItem("user-token");
-    const name = localStorage.getItem("user-name");
-    if (token) setIsLoggedIn(true);
-    if (name) setUserFirstName(name.split(" ")[0]);
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-
-
-  const handleLogout = () => {
-    // Remove the same keys that were used on login
-    localStorage.removeItem("user-token");
-    localStorage.removeItem("user-name");
-    setIsLoggedIn(false);
-    router.push("/");
-    setMenuOpen(false);
-  };
+  const isHome = pathname === '/';
+  const transparent = isHome && !isScrolled;
 
   return (
-    <>
-      <nav className="md:hidden sticky top-0 z-50 h-16 bg-black flex items-center px-4">
-        <button onClick={() => setMenuOpen(true)} className="text-white">
-          <Menu size={28} />
-        </button>
+    <motion.nav
+      initial={{ y: -80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6 }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        transparent
+          ? 'bg-transparent'
+          : 'bg-white/90 backdrop-blur-xl shadow-sm border-b border-[#69c8e4]/20'
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
 
-        <Link href="/" className="ml-3 flex items-center gap-2">
-          <span className="text-white text-lg font-bold">SHARING TOOL</span>
+        {/* LOGO */}
+        <Link href="/">
+          <motion.div whileHover={{ scale: 1.05 }}>
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              width={180}
+              height={40}
+              className="object-contain"
+            />
+          </motion.div>
         </Link>
 
-        <div className="ml-auto flex items-center gap-4">
-          {isLoggedIn ? (
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-1 text-white text-sm"
-            >
-              <User size={18} />
-              <span>{userFirstName}</span>
-            </button>
-          ) : (
-            <Link href="/login" className="text-white">
-              <User size={20} />
-            </Link>
-          )}
+        {/* DESKTOP MENU */}
+        <div className="hidden md:flex items-center gap-1">
+          {navLinks.map((link, i) => {
+            const isActive = pathname === link.href;
+
+            return (
+              <motion.div
+                key={link.name}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.05 + i * 0.05 }}
+              >
+                <Link
+                  href={link.href}
+                  className={`relative px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                    isActive
+                      ? 'text-[#69c8e4]'
+                      : transparent
+                      ? 'text-black hover:text-[#69c8e4]'
+                      : 'text-[#505f88] hover:text-[#69c8e4]'
+                  }`}
+                >
+                  {link.name}
+
+                  {/* underline animation */}
+                  <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-[#69c8e4] rounded-full transition-all duration-300 group-hover:w-4" />
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
-      </nav>
 
-    
-
-      {/* Desktop Navbar */}
-      <nav className="hidden md:flex sticky top-0 z-50 h-16 bg-black px-20 items-center">
-        <Link href="/" className="ml-3 flex items-center gap-2">
-          <span className="text-white text-lg font-bold">SHARING TOOL</span>
-        </Link>
-
-        <div className="ml-auto flex items-center gap-6">
-
-          
-
-          {isLoggedIn ? (
-            <div className="flex items-center gap-3 text-white">
-              <span>Hi, {userFirstName}</span>
-              <button onClick={handleLogout}>
-                <LogOut size={20} />
-              </button>
-            </div>
-          ) : (
-            <Link className="text-white" href="/login">
-              <User size={22} />
-            </Link>
-          )}
-        </div>
-      </nav>
-
-      {/* Mobile Side Menu */}
-      <div
-        className={`fixed inset-0 z-50 bg-black/40 ${menuOpen ? "block" : "hidden"}`}
-        onClick={() => setMenuOpen(false)}
-      >
-        <div
-          className="w-72 h-full bg-black text-white p-4 overflow-y-auto"
-          onClick={(e) => e.stopPropagation()}
+        {/* MOBILE BUTTON */}
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className={`md:hidden p-2 rounded-xl ${
+            transparent ? 'text-white' : 'text-[#505f88]'
+          }`}
         >
-          <div className="flex justify-between mb-4">
-            <span className="font-bold text-lg">Menu</span>
-            <button onClick={() => setMenuOpen(false)}>
-              <X size={22} />
-            </button>
-          </div>
-
-          <div className="flex flex-col gap-4 text-lg">
-          
-
-            {isLoggedIn ? (
-              <button onClick={handleLogout} className="flex items-center gap-2">
-                <LogOut size={20} /> Logout
-              </button>
-            ) : (
-              <Link href="/login" className="flex items-center gap-2">
-                <User size={20} /> Login
-              </Link>
-            )}
-          </div>
-        </div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={isOpen ? 'x' : 'menu'}
+              initial={{ rotate: -90, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              exit={{ rotate: 90, opacity: 0 }}
+            >
+              {isOpen ? <X size={24} /> : <Menu size={24} />}
+            </motion.div>
+          </AnimatePresence>
+        </button>
       </div>
-    </>
-  );
-};
 
-export default Navbar;
+      {/* MOBILE MENU */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="md:hidden bg-white border-t border-[#69c8e4]/20 overflow-hidden"
+          >
+            <div className="px-6 py-4 flex flex-col gap-2">
+              {navLinks.map((link) => {
+                const isActive = pathname === link.href;
+
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className={`px-4 py-3 rounded-xl font-semibold ${
+                      isActive
+                        ? 'text-[#69c8e4]'
+                        : 'text-black hover:text-[#69c8e4]'
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.nav>
+  );
+}

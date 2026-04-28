@@ -1,0 +1,176 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Barlow:wght@400;500;600&display=swap');
+
+/* ── PAGE ── */
+.page {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: #ece8f8;
+  overflow: hidden;
+  font-family: 'Barlow', sans-serif;
+}
+
+/* ── BACKGROUND SVG ── */
+.bgBlobs {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── NAVBAR ── */
+.logo {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #2d2665;
+  letter-spacing: 0.04em;
+}
+.logo span {
+  color: #7b6fcf;
+  font-weight: 400;
+}
+
+.navLink {
+  text-decoration: none;
+  color: #3d3a5c;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.navLink:hover {
+  color: #7b6fcf;
+}
+
+.btnLogin {
+  background: #f5a623;
+  color: #fff;
+  border: none;
+  padding: 10px 26px;
+  border-radius: 999px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btnLogin:hover {
+  background: #e09410;
+}
+
+/* ── LEFT CONTENT ── */
+
+
+.barAccent {
+  width: 5px;
+  height: 80px;
+  background: #f5a623;
+  border-radius: 3px;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.heading {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(3.2rem, 6vw, 5rem);
+  font-weight: 800;
+  color: #2d2665;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.bodyText {
+  margin-top: 22px;
+  font-size: 0.88rem;
+  color: #6b6880;
+  line-height: 1.75;
+  max-width: 400px;
+}
+
+.btnRead {
+  margin-top: 32px;
+  background: #f5a623;
+  color: #fff;
+  border: none;
+  padding: 14px 38px;
+  border-radius: 999px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  display: inline-block;
+}
+.btnRead:hover {
+  background: #e09410;
+  transform: translateY(-2px);
+}
+
+/* ── CIRCLES ── */
+.circleMain {
+  width: 290px;
+  height: 290px;
+  background: linear-gradient(135deg, #7b6fcf 0%, #5849b8 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(91, 73, 184, 0.35);
+  position: relative;
+  z-index: 3;
+}
+
+.circleTop {
+  position: absolute;
+  top: 38px;
+  right: 42px;
+  width: 148px;
+  height: 148px;
+  background: linear-gradient(135deg, #8b7fdf 0%, #6a59c8 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 14px 40px rgba(91, 73, 184, 0.3);
+  z-index: 4;
+}
+
+.circleBot {
+  position: absolute;
+  bottom: 44px;
+  right: 18px;
+  width: 162px;
+  height: 162px;
+  background: linear-gradient(135deg, #8b7fdf 0%, #6a59c8 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 14px 40px rgba(91, 73, 184, 0.3);
+  z-index: 4;
+}
+
+/* ── FLOATING DOTS ── */
+.dot {
+  position: absolute;
+  border-radius: 50%;
+  background: #b5acec;
+  opacity: 0.55;
+}
+.d1 { width: 12px; height: 12px; top: 180px; right: 230px; }
+.d2 { width:  8px; height:  8px; top: 195px; right: 212px; }
+.d3 { width:  6px; height:  6px; top: 210px; right: 228px; }
+.d4 { width: 11px; height: 11px; bottom: 170px; right: 198px; }
+.d5 { width:  7px; height:  7px; bottom: 186px; right: 184px; }

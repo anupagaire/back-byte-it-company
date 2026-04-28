@@ -124,3 +124,40 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+.floating {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+
+body {
+  font-family: 'Inter', system_ui, sans-serif;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.neon-text {
+  text-shadow: 0 0 30px rgb(129 140 248 / 0.6);
+}
+
+.card-hover {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 25px 50px -12px rgb(129 140 248 / 0.25);
+}

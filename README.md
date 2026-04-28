@@ -1,11 +1,6 @@
-## Getting Started
-First, run the development server:
-
-```bash
-npm run dev
-```
-npm install next@latest
-
+#69c8e4
+#505f88
+#fbfbfb
 # Next.js + Shadcn Template
 A reusable Next.js starter template with preconfigured layout and UI setup.
 
