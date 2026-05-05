@@ -1,85 +1,43 @@
 'use client';
 
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
-  Cloud,
-  Brain,
-  Shield,
-  Smartphone,
-  Zap,
-  Code2,
-  ArrowRight,
-  CheckCircle2,
-  ChevronDown,
+  Cloud, Brain, Shield, Smartphone, Zap, Code2,
+  Globe, Database, BarChart2, Lock, Layers, Settings,
+  ArrowRight, CheckCircle2, ChevronDown, Loader2,
 } from 'lucide-react';
+
+/* ─── Icon Map ──────────────────────────── */
+const ICON_MAP: Record<string, React.ElementType> = {
+  Code2, Cloud, Brain, Shield, Smartphone, Zap,
+  Globe, Database, BarChart2, Lock, Layers, Settings,
+};
 
 /* ─── Types ─────────────────────────────── */
 interface Service {
-  icon: React.ElementType;
+  id: string;
   title: string;
   shortDesc: string;
   details: string;
-  accent: string;
+  color: string;
+  icon: string;
+  order: number;
+  published: boolean;
+}
+
+interface ServiceWithPerks extends Service {
   perks: string[];
 }
 
-/* ─── Data ──────────────────────────────── */
-const services: Service[] = [
-  {
-    icon: Code2,
-    title: 'Custom Software Development',
-    shortDesc: 'Bespoke applications built for your exact needs.',
-    details:
-      'End-to-end development from architecture to deployment. We build scalable, maintainable web and desktop applications using React, Next.js, Node.js, Python, and more.',
-    accent: '#69c8e4',
-    perks: ['React / Next.js', 'Node.js & Python', 'REST & GraphQL APIs', 'CI/CD pipelines'],
-  },
-  {
-    icon: Cloud,
-    title: 'Cloud Solutions',
-    shortDesc: 'Scalable AWS, Azure & Google Cloud infrastructure.',
-    details:
-      'From cloud migrations to multi-region deployments, we architect resilient, cost-efficient cloud systems that scale with your business.',
-    accent: '#818cf8',
-    perks: ['AWS / Azure / GCP', 'Kubernetes & Docker', 'Cost optimisation', 'High availability'],
-  },
-  {
-    icon: Brain,
-    title: 'AI & Machine Learning',
-    shortDesc: 'Intelligent systems that learn and evolve.',
-    details:
-      'Custom ML models, NLP solutions, computer vision pipelines, and AI-powered automation tools that transform raw data into business value.',
-    accent: '#34d399',
-    perks: ['LLM integration', 'Computer vision', 'Predictive analytics', 'Workflow automation'],
-  },
-  {
-    icon: Shield,
-    title: 'Cybersecurity',
-    shortDesc: 'Enterprise-grade protection for your digital assets.',
-    details:
-      'Penetration testing, security audits, SOC 2 compliance support, and 24/7 threat monitoring to keep your systems and data safe.',
-    accent: '#fb923c',
-    perks: ['Penetration testing', 'SOC 2 compliance', 'Threat monitoring', 'Security audits'],
-  },
-  {
-    icon: Smartphone,
-    title: 'Mobile App Development',
-    shortDesc: 'Beautiful, performant iOS & Android experiences.',
-    details:
-      'Native and cross-platform apps built with React Native and Flutter. From MVP to enterprise apps, we deliver polished mobile experiences.',
-    accent: '#f472b6',
-    perks: ['React Native', 'Flutter', 'App Store launch', 'Push & offline support'],
-  },
-  {
-    icon: Zap,
-    title: 'Digital Transformation',
-    shortDesc: 'Modernize your entire business operations.',
-    details:
-      'Strategic consulting and full-stack execution to migrate legacy systems, digitize workflows, and position your organization for the future.',
-    accent: '#fbbf24',
-    perks: ['Legacy migration', 'Process automation', 'Change management', 'Training & support'],
-  },
+/* ─── Fallback data ─────────────────────── */
+const FALLBACK: ServiceWithPerks[] = [
+  { id: '1', title: 'Custom Software Development', shortDesc: 'Bespoke applications built for your exact needs.', details: 'End-to-end development from architecture to deployment. We build scalable, maintainable web and desktop applications using React, Next.js, Node.js, Python, and more.', color: '#69c8e4', icon: 'Code2', order: 0, published: true, perks: ['React / Next.js', 'Node.js & Python', 'REST & GraphQL APIs', 'CI/CD pipelines'] },
+  { id: '2', title: 'Cloud Solutions', shortDesc: 'Scalable AWS, Azure & Google Cloud infrastructure.', details: 'From cloud migrations to multi-region deployments, we architect resilient, cost-efficient cloud systems that scale with your business.', color: '#818cf8', icon: 'Cloud', order: 1, published: true, perks: ['AWS / Azure / GCP', 'Kubernetes & Docker', 'Cost optimisation', 'High availability'] },
+  { id: '3', title: 'AI & Machine Learning', shortDesc: 'Intelligent systems that learn and evolve.', details: 'Custom ML models, NLP solutions, computer vision pipelines, and AI-powered automation tools that transform raw data into business value.', color: '#34d399', icon: 'Brain', order: 2, published: true, perks: ['LLM integration', 'Computer vision', 'Predictive analytics', 'Workflow automation'] },
+  { id: '4', title: 'Cybersecurity', shortDesc: 'Enterprise-grade protection for your digital assets.', details: 'Penetration testing, security audits, SOC 2 compliance support, and 24/7 threat monitoring to keep your systems and data safe.', color: '#fb923c', icon: 'Shield', order: 3, published: true, perks: ['Penetration testing', 'SOC 2 compliance', 'Threat monitoring', 'Security audits'] },
+  { id: '5', title: 'Mobile App Development', shortDesc: 'Beautiful, performant iOS & Android experiences.', details: 'Native and cross-platform apps built with React Native and Flutter. From MVP to enterprise apps, we deliver polished mobile experiences.', color: '#f472b6', icon: 'Smartphone', order: 4, published: true, perks: ['React Native', 'Flutter', 'App Store launch', 'Push & offline support'] },
+  { id: '6', title: 'Digital Transformation', shortDesc: 'Modernize your entire business operations.', details: 'Strategic consulting and full-stack execution to migrate legacy systems, digitize workflows, and position your organization for the future.', color: '#fbbf24', icon: 'Zap', order: 5, published: true, perks: ['Legacy migration', 'Process automation', 'Change management', 'Training & support'] },
 ];
 
 const steps = [
@@ -89,7 +47,7 @@ const steps = [
   { num: '04', label: 'Launch', desc: 'Deploy, monitor, iterate. We stay on board.' },
 ];
 
-/* ─── Particle ──────────────────────────── */
+/* ─── Helpers ───────────────────────────── */
 function Particle({ delay, x, y, size }: { delay: number; x: string; y: string; size: number }) {
   return (
     <motion.div
@@ -101,7 +59,6 @@ function Particle({ delay, x, y, size }: { delay: number; x: string; y: string; 
   );
 }
 
-/* ─── FadeUp ────────────────────────────── */
 function FadeUp({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
   return (
     <motion.div
@@ -117,9 +74,9 @@ function FadeUp({ children, delay = 0, className = '' }: { children: React.React
 }
 
 /* ─── Service Card ──────────────────────── */
-function ServiceCard({ service, index }: { service: Service; index: number }) {
+function ServiceCard({ service, index }: { service: ServiceWithPerks; index: number }) {
   const [open, setOpen] = useState(false);
-  const Icon = service.icon;
+  const Icon = ICON_MAP[service.icon] || Code2;
 
   return (
     <motion.div
@@ -129,17 +86,20 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
       transition={{ delay: index * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className="group relative bg-white border border-gray-100 rounded-3xl overflow-hidden cursor-pointer"
       style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.04)' }}
-      whileHover={{ y: -6, boxShadow: `0 20px 60px ${service.accent}18` }}
-      transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+      whileHover={{ y: -6, boxShadow: `0 20px 60px ${service.color}18` }}
       onClick={() => setOpen(!open)}
     >
       {/* Top accent line */}
-      <div className="h-0.5 w-0 group-hover:w-full transition-all duration-500 rounded-t-3xl"
-        style={{ background: `linear-gradient(90deg, ${service.accent}, transparent)` }} />
+      <div
+        className="h-0.5 w-0 group-hover:w-full transition-all duration-500 rounded-t-3xl"
+        style={{ background: `linear-gradient(90deg, ${service.color}, transparent)` }}
+      />
 
-      {/* Radial glow on hover */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-3xl"
-        style={{ background: `radial-gradient(ellipse 60% 50% at 20% 20%, ${service.accent}0d, transparent 70%)` }} />
+      {/* Radial glow */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-3xl"
+        style={{ background: `radial-gradient(ellipse 60% 50% at 20% 20%, ${service.color}0d, transparent 70%)` }}
+      />
 
       <div className="p-8">
         {/* Icon */}
@@ -147,16 +107,15 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
           whileHover={{ scale: 1.1, rotate: 5 }}
           transition={{ type: 'spring', stiffness: 400 }}
           className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
-          style={{ background: `${service.accent}18` }}
+          style={{ background: `${service.color}18` }}
         >
-          <Icon size={26} style={{ color: service.accent }} />
+          <Icon size={26} style={{ color: service.color }} />
         </motion.div>
 
         {/* Title + toggle */}
         <div className="flex items-start justify-between gap-4 mb-3">
           <h3 className="text-xl font-black text-[#1a2744] leading-snug">{service.title}</h3>
-          <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.3 }}
-            className="shrink-0 mt-1">
+          <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.3 }} className="shrink-0 mt-1">
             <ChevronDown size={16} className="text-gray-300" />
           </motion.div>
         </div>
@@ -173,18 +132,20 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
           <p className="text-gray-500 text-sm leading-relaxed mb-5 border-t border-gray-50 pt-5">
             {service.details}
           </p>
-          <div className="grid grid-cols-2 gap-2">
-            {service.perks.map((perk, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <CheckCircle2 size={13} style={{ color: service.accent }} className="shrink-0" />
-                <span className="text-xs text-gray-400 font-medium">{perk}</span>
-              </div>
-            ))}
-          </div>
+          {service.perks.length > 0 && (
+            <div className="grid grid-cols-2 gap-2">
+              {service.perks.map((perk, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <CheckCircle2 size={13} style={{ color: service.color }} className="shrink-0" />
+                  <span className="text-xs text-gray-400 font-medium">{perk}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </motion.div>
 
         {/* Learn more */}
-        <div className="flex items-center gap-2 mt-6 text-sm font-bold" style={{ color: service.accent }}>
+        <div className="flex items-center gap-2 mt-6 text-sm font-bold" style={{ color: service.color }}>
           {open ? 'Close' : 'Learn more'}
           <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
         </div>
@@ -200,10 +161,30 @@ export default function ServicesPage() {
   const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
+  const [services, setServices] = useState<ServiceWithPerks[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/services')
+      .then((r) => r.json())
+      .then((data: Service[]) => {
+        if (data.length > 0) {
+          // Map API data → ServiceWithPerks (perks extracted from details or empty)
+          const mapped: ServiceWithPerks[] = data.map((s) => ({
+            ...s,
+            perks: [], // perks not stored in DB — add perks field to schema if needed
+          }));
+          setServices(mapped);
+        } else {
+          setServices(FALLBACK);
+        }
+      })
+      .catch(() => setServices(FALLBACK))
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <div className="bg-white overflow-hidden font-sans">
-
-      {/* ── HERO ──────────────────────────── */}
       <section ref={heroRef} className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-[#050d1f]" />
         <div className="absolute inset-0 opacity-50"
@@ -215,26 +196,6 @@ export default function ServicesPage() {
         <div className="absolute inset-0 opacity-[0.04]"
           style={{ backgroundImage: 'linear-gradient(#69c8e4 1px, transparent 1px), linear-gradient(90deg, #69c8e4 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
 
-        {/* Particles */}
-        {[
-          { delay: 0, x: '8%', y: '25%', size: 8 },
-          { delay: 1.2, x: '88%', y: '20%', size: 11 },
-          { delay: 2, x: '20%', y: '75%', size: 6 },
-          { delay: 0.7, x: '72%', y: '60%', size: 9 },
-          { delay: 3, x: '50%', y: '88%', size: 7 },
-          { delay: 1.8, x: '38%', y: '35%', size: 5 },
-        ].map((p, i) => <Particle key={i} {...p} />)}
-
-        {/* Rings */}
-        <motion.div className="absolute rounded-full border border-[#69c8e4]/10"
-          style={{ width: 500, height: 500, left: '50%', top: '50%', x: '-50%', y: '-50%' }}
-          animate={{ scale: [1, 1.08, 1], opacity: [0.3, 0.6, 0.3] }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }} />
-        <motion.div className="absolute rounded-full border border-[#818cf8]/10"
-          style={{ width: 800, height: 800, left: '50%', top: '50%', x: '-50%', y: '-50%' }}
-          animate={{ scale: [1.06, 1, 1.06], opacity: [0.15, 0.35, 0.15] }}
-          transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }} />
-
         <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-10 text-center px-6 max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -243,7 +204,9 @@ export default function ServicesPage() {
             className="inline-flex items-center gap-2 bg-white/5 border border-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-8"
           >
             <span className="w-2 h-2 rounded-full bg-[#69c8e4] animate-pulse" />
-            <span className="text-white/60 text-sm tracking-widest uppercase">6 Core Disciplines · Full-Stack Studio</span>
+            <span className="text-white/60 text-sm tracking-widest uppercase">
+              {loading ? 'Loading...' : `${services.length} Core Disciplines · Full-Stack Studio`}
+            </span>
           </motion.div>
 
           <motion.h1
@@ -291,14 +254,6 @@ export default function ServicesPage() {
             </motion.a>
           </motion.div>
         </motion.div>
-
-        {/* Scroll indicator */}
-        <motion.div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-          animate={{ opacity: [1, 0.3, 1] }}
-          transition={{ duration: 2, repeat: Infinity }}>
-          <span className="text-white/30 text-xs tracking-widest uppercase">Scroll</span>
-          <div className="w-px h-10 bg-gradient-to-b from-white/20 to-transparent" />
-        </motion.div>
       </section>
 
       {/* ── SERVICES GRID ─────────────────── */}
@@ -319,11 +274,17 @@ export default function ServicesPage() {
           </p>
         </FadeUp>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((s, i) => (
-            <ServiceCard key={i} service={s} index={i} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="flex justify-center items-center py-24">
+            <Loader2 size={36} className="animate-spin text-[#69c8e4]" />
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {services.map((s, i) => (
+              <ServiceCard key={s.id} service={s} index={i} />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* ── PROCESS ───────────────────────── */}
@@ -331,7 +292,6 @@ export default function ServicesPage() {
         <div className="absolute inset-0 opacity-[0.04]"
           style={{ backgroundImage: 'linear-gradient(#69c8e4 1px, transparent 1px), linear-gradient(90deg, #69c8e4 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
 
-        {/* Animated blobs */}
         <motion.div animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
           transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
           className="absolute w-80 h-80 rounded-full blur-3xl opacity-10 pointer-events-none"
@@ -349,14 +309,11 @@ export default function ServicesPage() {
             <h2 className="text-5xl font-black text-white">How We Work</h2>
           </FadeUp>
 
-          {/* Steps */}
           <div className="grid md:grid-cols-4 gap-0 relative">
             <div className="hidden md:block absolute top-9 left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-[#69c8e4]/20 via-[#818cf8]/40 to-[#69c8e4]/20" />
-
             {steps.map((step, i) => (
               <FadeUp key={i} delay={i * 0.12}>
                 <div className="relative text-center px-4">
-                  {/* Number circle */}
                   <motion.div
                     whileInView={{ scale: [0, 1.15, 1] }}
                     viewport={{ once: true }}
@@ -369,7 +326,6 @@ export default function ServicesPage() {
                       {step.num}
                     </span>
                   </motion.div>
-
                   <h3 className="text-white font-black text-xl mb-3">{step.label}</h3>
                   <p className="text-white/40 text-sm leading-relaxed">{step.desc}</p>
                 </div>
@@ -419,9 +375,7 @@ export default function ServicesPage() {
         </FadeUp>
 
         <FadeUp delay={0.2}>
-          {/* Visual card cluster */}
           <div className="relative h-[420px]">
-            {/* Main card */}
             <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
@@ -457,7 +411,6 @@ export default function ServicesPage() {
               </div>
             </motion.div>
 
-            {/* Second card */}
             <motion.div
               animate={{ y: [0, 10, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
@@ -477,7 +430,7 @@ export default function ServicesPage() {
             </motion.div>
           </div>
         </FadeUp>
-      </section>      
+      </section>
     </div>
   );
 }

@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   Mail,
-  Folder,
   Briefcase,
   Settings,
   Users,
@@ -13,9 +12,11 @@ import {
 
 const items = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+  { name: 'Services', href: '/admin/services', icon: Mail },
   { name: 'Contacts', href: '/admin/contact', icon: Mail },
   { name: 'Careers', href: '/admin/careers', icon: Briefcase },
   { name: 'Applications', href: '/admin/applications', icon: Users },
+  { name: 'Settings', href: '/admin/settings', icon: Settings },
 ];
 
 export default function AdminSidebar() {
@@ -50,7 +51,6 @@ export default function AdminSidebar() {
         })}
       </div>
 
-      {/* footer */}
       <div className="absolute bottom-6 text-xs text-gray-400">
         v1.0 Admin System
       </div>

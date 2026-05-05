@@ -1,0 +1,449 @@
+"use client";
+
+import Link from "next/link";
+
+interface Stats {
+  totalContacts: number;
+  totalCareers: number;
+  totalJobs: number;
+  totalApplications: number;
+  pendingApplications: number;
+}
+
+interface Contact {
+  id: string;
+  name: string;
+  email: string;
+  company?: string | null;
+  service?: string | null;
+  message: string;
+  createdAt: string;
+}
+
+interface Application {
+  id: string;
+  name: string;
+  email: string;
+  status: string;
+  createdAt: string;
+  job: { title: string };
+}
+
+interface Props {
+  adminName: string;
+  stats: Stats;
+  recentContacts: Contact[];
+  recentApplications: Application[];
+}
+
+function StatCard({
+  label,
+  value,
+  icon,
+  color,
+  href,
+}: {
+  label: string;
+  value: number;
+  icon: string;
+  color: string;
+  href: string;
+}) {
+  return (
+    <Link href={href} style={{ textDecoration: "none" }}>
+      <div
+        style={{
+          background: "#fff",
+          border: "1px solid #e5e7eb",
+          borderRadius: "16px",
+          padding: "1.5rem",
+          display: "flex",
+          alignItems: "center",
+          gap: "1rem",
+          transition: "box-shadow 0.2s, transform 0.2s",
+          cursor: "pointer",
+        }}
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLDivElement).style.boxShadow =
+            "0 4px 20px rgba(0,0,0,0.08)";
+          (e.currentTarget as HTMLDivElement).style.transform = "translateY(-2px)";
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLDivElement).style.boxShadow = "none";
+          (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)";
+        }}
+      >
+        <div
+          style={{
+            width: "48px",
+            height: "48px",
+            borderRadius: "12px",
+            background: color,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "22px",
+            flexShrink: 0,
+          }}
+        >
+          {icon}
+        </div>
+        <div>
+          <p
+            style={{
+              margin: 0,
+              fontSize: "0.8rem",
+              color: "#6b7280",
+              fontWeight: 500,
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+            }}
+          >
+            {label}
+          </p>
+          <p
+            style={{
+              margin: "2px 0 0",
+              fontSize: "1.75rem",
+              fontWeight: 700,
+              color: "#111827",
+              lineHeight: 1,
+            }}
+          >
+            {value}
+          </p>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+function StatusBadge({ status }: { status: string }) {
+  const colors: Record<string, { bg: string; text: string }> = {
+    pending: { bg: "#fef3c7", text: "#92400e" },
+    reviewed: { bg: "#dbeafe", text: "#1e40af" },
+    accepted: { bg: "#d1fae5", text: "#065f46" },
+    rejected: { bg: "#fee2e2", text: "#991b1b" },
+  };
+  const c = colors[status] || { bg: "#f3f4f6", text: "#374151" };
+  return (
+    <span
+      style={{
+        background: c.bg,
+        color: c.text,
+        padding: "2px 10px",
+        borderRadius: "999px",
+        fontSize: "0.75rem",
+        fontWeight: 600,
+        textTransform: "capitalize",
+      }}
+    >
+      {status}
+    </span>
+  );
+}
+
+function timeAgo(dateStr: string) {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  return `${Math.floor(hrs / 24)}d ago`;
+}
+
+export default function DashboardClient({
+  adminName,
+  stats,
+  recentContacts,
+  recentApplications,
+}: Props) {
+  const statCards = [
+    {
+      label: "Total Contacts",
+      value: stats.totalContacts,
+      icon: "✉️",
+      color: "#ede9fe",
+      href: "/admin/contacts",
+    },
+    {
+      label: "Job Listings",
+      value: stats.totalJobs,
+      icon: "💼",
+      color: "#dbeafe",
+      href: "/admin/jobs",
+    },
+    {
+      label: "Applications",
+      value: stats.totalApplications,
+      icon: "📋",
+      color: "#d1fae5",
+      href: "/admin/applications",
+    },
+    {
+      label: "Pending Review",
+      value: stats.pendingApplications,
+      icon: "⏳",
+      color: "#fef3c7",
+      href: "/admin/applications",
+    },
+    {
+      label: "Career Posts",
+      value: stats.totalCareers,
+      icon: "🚀",
+      color: "#fce7f3",
+      href: "/admin/careers",
+    },
+  ];
+
+  return (
+    <div style={{ fontFamily: "'DM Sans', sans-serif", maxWidth: "1200px" }}>
+      {/* Header */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: "2rem",
+        }}
+      >
+        <div>
+          <h1
+            style={{
+              margin: 0,
+              fontSize: "1.75rem",
+              fontWeight: 700,
+              color: "#111827",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            Good day, {adminName} 👋
+          </h1>
+          <p style={{ margin: "4px 0 0", color: "#6b7280", fontSize: "0.9rem" }}>
+            Here's what's happening across your platform
+          </p>
+        </div>
+        <Link
+          href="/admin/settings"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            padding: "0.6rem 1.25rem",
+            background: "#111827",
+            color: "#fff",
+            borderRadius: "10px",
+            textDecoration: "none",
+            fontSize: "0.875rem",
+            fontWeight: 500,
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
+          </svg>
+          Settings
+        </Link>
+      </div>
+
+      {/* Stat cards */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+          gap: "1rem",
+          marginBottom: "2rem",
+        }}
+      >
+        {statCards.map((s) => (
+          <StatCard key={s.label} {...s} />
+        ))}
+      </div>
+
+      {/* Two column tables */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "1.5rem",
+        }}
+      >
+        {/* Recent Contacts */}
+        <div
+          style={{
+            background: "#fff",
+            border: "1px solid #e5e7eb",
+            borderRadius: "16px",
+            overflow: "hidden",
+          }}
+        >
+          <div
+            style={{
+              padding: "1.25rem 1.5rem",
+              borderBottom: "1px solid #f3f4f6",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 600, color: "#111827" }}>
+              Recent Contacts
+            </h2>
+            <Link
+              href="/admin/contacts"
+              style={{ fontSize: "0.8rem", color: "#6366f1", textDecoration: "none", fontWeight: 500 }}
+            >
+              View all →
+            </Link>
+          </div>
+          <div>
+            {recentContacts.length === 0 ? (
+              <p style={{ padding: "1.5rem", color: "#9ca3af", fontSize: "0.875rem", margin: 0 }}>
+                No contacts yet
+              </p>
+            ) : (
+              recentContacts.map((c, i) => (
+                <div
+                  key={c.id}
+                  style={{
+                    padding: "1rem 1.5rem",
+                    borderBottom: i < recentContacts.length - 1 ? "1px solid #f9fafb" : "none",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.75rem",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "36px",
+                      height: "36px",
+                      borderRadius: "50%",
+                      background: "#ede9fe",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "0.875rem",
+                      fontWeight: 700,
+                      color: "#7c3aed",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {c.name[0].toUpperCase()}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ margin: 0, fontSize: "0.875rem", fontWeight: 600, color: "#111827" }}>
+                      {c.name}
+                    </p>
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: "0.75rem",
+                        color: "#6b7280",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {c.email}
+                    </p>
+                  </div>
+                  <span style={{ fontSize: "0.75rem", color: "#9ca3af", flexShrink: 0 }}>
+                    {timeAgo(c.createdAt)}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* Recent Applications */}
+        <div
+          style={{
+            background: "#fff",
+            border: "1px solid #e5e7eb",
+            borderRadius: "16px",
+            overflow: "hidden",
+          }}
+        >
+          <div
+            style={{
+              padding: "1.25rem 1.5rem",
+              borderBottom: "1px solid #f3f4f6",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 600, color: "#111827" }}>
+              Recent Applications
+            </h2>
+            <Link
+              href="/admin/applications"
+              style={{ fontSize: "0.8rem", color: "#6366f1", textDecoration: "none", fontWeight: 500 }}
+            >
+              View all →
+            </Link>
+          </div>
+          <div>
+            {recentApplications.length === 0 ? (
+              <p style={{ padding: "1.5rem", color: "#9ca3af", fontSize: "0.875rem", margin: 0 }}>
+                No applications yet
+              </p>
+            ) : (
+              recentApplications.map((a, i) => (
+                <div
+                  key={a.id}
+                  style={{
+                    padding: "1rem 1.5rem",
+                    borderBottom: i < recentApplications.length - 1 ? "1px solid #f9fafb" : "none",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.75rem",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "36px",
+                      height: "36px",
+                      borderRadius: "50%",
+                      background: "#d1fae5",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "0.875rem",
+                      fontWeight: 700,
+                      color: "#065f46",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {a.name[0].toUpperCase()}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ margin: 0, fontSize: "0.875rem", fontWeight: 600, color: "#111827" }}>
+                      {a.name}
+                    </p>
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: "0.75rem",
+                        color: "#6b7280",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {a.job.title}
+                    </p>
+                  </div>
+                  <StatusBadge status={a.status} />
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');`}</style>
+    </div>
+  );
+}

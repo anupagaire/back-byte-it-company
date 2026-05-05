@@ -32,7 +32,7 @@ model Job {
   title       String
   description String
   location    String
-  type        String   // Full-time, Part-time, Remote
+  type        String   
   department  String
   published   Boolean  @default(true)
   createdAt   DateTime @default(now())
@@ -53,4 +53,24 @@ model Application {
   job            Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
   @@map("applications")
+}
+model AdminUser {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  password  String   //hashed
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model Service {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  shortDesc   String
+  details     String
+  color       String   @default("#69c8e4")
+  icon        String   @default("Code2")
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
