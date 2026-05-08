@@ -2,8 +2,20 @@
 
 import { motion, useScroll, useTransform, useInView, animate } from 'framer-motion';
 import Image from 'next/image';
-import { Users, Target, Sparkles, Code2, Globe, Zap, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Users, Target, Sparkles, Code2, Globe, Zap, CheckCircle2, Linkedin, Twitter, Github } from 'lucide-react';
 import { useRef, useEffect, useState } from 'react';
+
+/* ─── Types ─────────────────────────────────────────────── */
+interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  bio: string | null;
+  photo: string | null;
+  linkedin: string | null;
+  twitter: string | null;
+  github: string | null;
+}
 
 /* ─── Animated Counter ─────────────────────────────────── */
 function Counter({ to, suffix = '' }: { to: number; suffix?: string }) {
@@ -52,26 +64,85 @@ function FadeUp({ children, delay = 0, className = '' }: { children: React.React
   );
 }
 
-/* ─── Timeline data ─────────────────────────────────── */
-const milestones = [
-  { year: '2018', title: 'Founded', desc: 'BackByte Technology was born in a small office with a big vision.' },
-  { year: '2019', title: 'First 10 Clients', desc: 'We crossed our first major milestone delivering MVPs for early-stage startups.' },
-  { year: '2021', title: 'Team of 25', desc: 'Expanded our engineering and design team to tackle enterprise-scale projects.' },
-  { year: '2023', title: 'Global Reach', desc: 'Serving clients across 18 countries with distributed remote teams.' },
-  { year: '2025', title: 'AI-First Future', desc: 'Pioneering AI-integrated product development for next-gen businesses.' },
-];
+/* ─── Team Member Card ───────────────────────────────────── */
+function TeamCard({ member, index }: { member: TeamMember; index: number }) {
+  const hasSocials = member.linkedin || member.twitter || member.github;
 
-/* ─── Team data ─────────────────────────────────── */
-const team = [
-  { name: 'Alex Carter', role: 'CEO & Co-Founder', initials: 'AC', color: 'from-[#69c8e4] to-[#505f88]' },
-  { name: 'Sarah Lin', role: 'Head of Design', initials: 'SL', color: 'from-[#f093fb] to-[#f5576c]' },
-  { name: 'David Osei', role: 'Lead Engineer', initials: 'DO', color: 'from-[#4facfe] to-[#00f2fe]' },
-  { name: 'Priya Sharma', role: 'Product Manager', initials: 'PS', color: 'from-[#43e97b] to-[#38f9d7]' },
-  { name: 'Tom Berg', role: 'DevOps Architect', initials: 'TB', color: 'from-[#fa709a] to-[#fee140]' },
-  { name: 'Aisha Yusuf', role: 'ML Engineer', initials: 'AY', color: 'from-[#a18cd1] to-[#fbc2eb]' },
-];
+  return (
+    <FadeUp delay={index * 0.08}>
+      <motion.div
+        whileHover={{ y: -8 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+        className="group bg-white border border-gray-100 rounded-3xl p-8 text-center cursor-pointer shadow-sm hover:shadow-xl transition-shadow"
+      >
+        {/* Photo or Initials */}
+        <div className="flex justify-center mb-4">
+          {member.photo ? (
+            <div className="relative w-20 h-20 rounded-2xl overflow-hidden ring-2 ring-gray-100 group-hover:ring-[#69c8e4]/30 transition-all">
+              <Image
+                src={member.photo}
+                alt={member.name}
+                fill
+                className="object-cover"
+                sizes="80px"
+              />
+            </div>
+          ) : (
+            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#69c8e4]/20 to-[#505f88]/20 flex items-center justify-center text-[#505f88] font-black text-2xl ring-2 ring-gray-100 group-hover:ring-[#69c8e4]/30 transition-all">
+              {member.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+            </div>
+          )}
+        </div>
 
+        <h4 className="font-black text-[#1a2744] text-lg">{member.name}</h4>
+        <p className="text-[#69c8e4] text-sm font-semibold mt-0.5">{member.role}</p>
 
+        {member.bio && (
+          <p className="text-gray-400 text-xs mt-3 leading-relaxed line-clamp-2">{member.bio}</p>
+        )}
+
+        {/* Social links */}
+        {hasSocials && (
+          <div className="flex justify-center gap-2 pt-4 mt-3 border-t border-gray-100">
+            {member.linkedin && (
+              <a
+                href={member.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={e => e.stopPropagation()}
+                className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-[#69c8e4]/10 hover:text-[#69c8e4] cursor-pointer transition-colors"
+              >
+                <Linkedin size={14} />
+              </a>
+            )}
+            {member.twitter && (
+              <a
+                href={member.twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={e => e.stopPropagation()}
+                className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-[#69c8e4]/10 hover:text-[#69c8e4] cursor-pointer transition-colors"
+              >
+                <Twitter size={14} />
+              </a>
+            )}
+            {member.github && (
+              <a
+                href={member.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={e => e.stopPropagation()}
+                className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-[#69c8e4]/10 hover:text-[#69c8e4] cursor-pointer transition-colors"
+              >
+                <Github size={14} />
+              </a>
+            )}
+          </div>
+        )}
+      </motion.div>
+    </FadeUp>
+  );
+}
 
 /* ─── Services ─────────────────────────────────── */
 const services = [
@@ -81,30 +152,40 @@ const services = [
   { icon: Sparkles, title: 'UI/UX Design', desc: 'Research-driven design that converts and delights.' },
 ];
 
+/* ─── Main Page ─────────────────────────────────── */
 export default function AboutPage() {
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
   const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
+  const [team, setTeam] = useState<TeamMember[]>([]);
+  const [teamLoading, setTeamLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/team')
+      .then(r => r.json())
+      .then(setTeam)
+      .catch(console.error)
+      .finally(() => setTeamLoading(false));
+  }, []);
+
   return (
     <div className="bg-white overflow-hidden font-sans">
 
       {/* ── HERO ─────────────────────────────────────────── */}
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
-
-        {/* Gradient mesh background */}
-        <div className="absolute inset-0 bg-[#050d1f]" />
+        <div className="absolute inset-0">
+          <img src="/3.jpg" alt="Hero Background" className="w-full h-full object-cover" />
+        </div>
+        <div className="absolute inset-0 z-10 bg-[#050d1f]/60" />
         <div className="absolute inset-0 opacity-50"
           style={{ background: 'radial-gradient(ellipse 80% 60% at 50% -10%, #1a4870 0%, transparent 70%)' }} />
         <div className="absolute inset-0 opacity-30"
           style={{ background: 'radial-gradient(ellipse 60% 50% at 80% 80%, #0d3d5e 0%, transparent 60%)' }} />
-
-        {/* Grid pattern */}
         <div className="absolute inset-0 opacity-[0.04]"
           style={{ backgroundImage: 'linear-gradient(#69c8e4 1px, transparent 1px), linear-gradient(90deg, #69c8e4 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
 
-        {/* Floating particles */}
         {[
           { delay: 0, x: '10%', y: '20%', size: 8 },
           { delay: 1, x: '85%', y: '15%', size: 12 },
@@ -116,7 +197,6 @@ export default function AboutPage() {
           { delay: 1.2, x: '5%', y: '55%', size: 11 },
         ].map((p, i) => <Particle key={i} {...p} />)}
 
-        {/* Animated ring */}
         <motion.div
           className="absolute rounded-full border border-[#69c8e4]/10"
           style={{ width: 600, height: 600, left: '50%', top: '50%', x: '-50%', y: '-50%' }}
@@ -164,12 +244,8 @@ export default function AboutPage() {
             A team of engineers, designers, and strategists crafting products
             that move the needle — from zero to scale.
           </motion.p>
-
-         
         </motion.div>
       </section>
-
-      
 
       {/* ── STORY ─────────────────────────────────────────── */}
       <section className="py-32 max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-20 items-center">
@@ -206,24 +282,16 @@ export default function AboutPage() {
 
         <FadeUp delay={0.2}>
           <div className="relative">
-            {/* Glow effect behind image */}
             <div className="absolute -inset-4 rounded-3xl blur-2xl opacity-20"
               style={{ background: 'linear-gradient(135deg, #69c8e4, #505f88)' }} />
-
             <div className="relative rounded-3xl overflow-hidden border border-gray-100 shadow-2xl">
-              <Image
-                src="/team.png"
-                alt="BackByte Team"
-                width={600}
-                height={480}
-                className="w-full h-auto object-cover"
-              />
-           
+              <Image src="/team.png" alt="BackByte Team" width={600} height={480} className="w-full h-auto object-cover" />
             </div>
           </div>
         </FadeUp>
       </section>
 
+      {/* ── SERVICES ─────────────────────────────────────── */}
       <section className="py-4 bg-gray-50/80">
         <div className="max-w-7xl mx-auto px-6">
           <FadeUp className="text-center mb-16">
@@ -256,7 +324,6 @@ export default function AboutPage() {
       {/* ── VALUES ────────────────────────────────────────── */}
       <section className="py-8 max-w-7xl mx-auto px-6">
         <FadeUp className="text-center mb-20">
-         
           <h2 className="text-5xl font-black text-[#1a2744]">What drives us</h2>
         </FadeUp>
 
@@ -273,11 +340,9 @@ export default function AboutPage() {
                   whileHover={{ y: -6 }}
                   className="group relative bg-white p-10 rounded-3xl border border-gray-100 shadow-sm overflow-hidden"
                 >
-                  {/* Background decoration */}
                   <div className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-0 group-hover:opacity-10 transition-all duration-500 -translate-y-8 translate-x-8"
                     style={{ background: v.color }} />
-
-                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 text-white"
+                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
                     style={{ background: `linear-gradient(135deg, ${v.color}40, ${v.color}20)` }}>
                     <Icon size={26} style={{ color: v.color }} />
                   </div>
@@ -290,106 +355,33 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── TIMELINE ─────────────────────────────────────── */}
-      <section className="py-24 bg-[#050d1f] overflow-hidden">
-        <div className="max-w-5xl mx-auto px-6">
-          <FadeUp className="text-center mb-16">
-            <div className="inline-block bg-white/5 text-white/50 text-xs font-bold tracking-widest uppercase px-3 py-1.5 rounded-full mb-4 border border-white/10">
-              Our Journey
-            </div>
-            <h2 className="text-5xl font-black text-white">The road so far</h2>
-          </FadeUp>
-
-          <div className="relative">
-            {/* Vertical line */}
-            <div className="absolute left-[18px] md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-[#69c8e4]/50 via-[#505f88]/50 to-transparent" />
-
-            <div className="space-y-12">
-              {milestones.map((m, i) => (
-                <FadeUp key={i} delay={i * 0.1}>
-                  <div className={`flex gap-8 items-start ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
-
-                    {/* Dot */}
-                    <div className="relative shrink-0 md:w-1/2 flex justify-end md:pr-8" style={{ display: i % 2 !== 0 ? undefined : undefined }}>
-                      {i % 2 === 0 && (
-                        <div>
-                          <motion.div
-                            whileInView={{ scale: [0, 1.2, 1] }}
-                            viewport={{ once: true }}
-                            className="hidden md:block w-4 h-4 rounded-full bg-gradient-to-br from-[#69c8e4] to-[#505f88] ring-4 ring-[#69c8e4]/20 absolute -right-[9px] top-1.5"
-                          />
-                          <div className="bg-white/5 border border-white/10 backdrop-blur-sm rounded-2xl p-6 max-w-xs ml-auto hidden md:block">
-                            <span className="text-[#69c8e4] font-black text-3xl">{m.year}</span>
-                            <h4 className="text-white font-bold text-lg mt-1">{m.title}</h4>
-                            <p className="text-white/40 text-sm mt-2 leading-relaxed">{m.desc}</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Mobile / odd items */}
-                    <div className={`${i % 2 === 0 ? 'md:w-1/2 md:pl-8' : 'md:w-1/2 md:pr-8'} w-full pl-10 md:pl-0`}>
-                      <motion.div
-                        whileInView={{ scale: [0, 1.2, 1] }}
-                        viewport={{ once: true }}
-                        className="w-4 h-4 rounded-full bg-gradient-to-br from-[#69c8e4] to-[#505f88] ring-4 ring-[#69c8e4]/20 absolute left-[11px] md:hidden"
-                        style={{ marginTop: '6px' }}
-                      />
-                      <div className="bg-white/5 border border-white/10 backdrop-blur-sm rounded-2xl p-6 md:max-w-xs">
-                        <span className="text-[#69c8e4] font-black text-3xl">{m.year}</span>
-                        <h4 className="text-white font-bold text-lg mt-1">{m.title}</h4>
-                        <p className="text-white/40 text-sm mt-2 leading-relaxed">{m.desc}</p>
-                      </div>
-                    </div>
-
-                  </div>
-                </FadeUp>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ── TEAM ─────────────────────────────────────────── */}
       <section className="py-12 max-w-7xl mx-auto px-6">
         <FadeUp className="text-center mb-16">
-          
           <h2 className="text-5xl font-black text-[#1a2744]">Meet our team</h2>
           <p className="text-gray-400 mt-4 max-w-xl mx-auto">
             Diverse minds united by a passion for building things that work beautifully.
           </p>
         </FadeUp>
 
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {team.map((member, i) => (
-            <FadeUp key={i} delay={i * 0.08}>
-              <motion.div
-                whileHover={{ y: -8 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                className="group bg-white border border-gray-100 rounded-3xl p-8 text-center cursor-pointer shadow-sm hover:shadow-xl transition-shadow"
-              >
-               
-                <h4 className="font-black text-[#1a2744] text-lg">{member.name}</h4>
-                <p className="text-gray-400 text-sm mt-1">{member.role}</p>
-
-                {/* Hover reveal */}
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  whileHover={{ opacity: 1, height: 'auto' }}
-                  className="mt-4 overflow-hidden"
-                >
-                  <div className="flex justify-center gap-2 pt-3 border-t border-gray-100">
-                    {['in', 'tw', 'gh'].map((s) => (
-                      <div key={s} className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 text-xs font-bold hover:bg-[#69c8e4]/10 hover:text-[#69c8e4] cursor-pointer transition-colors">
-                        {s}
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              </motion.div>
-            </FadeUp>
-          ))}
-        </div>
+        {teamLoading ? (
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bg-gray-100 rounded-3xl h-56 animate-pulse" />
+            ))}
+          </div>
+        ) : team.length === 0 ? (
+          <div className="text-center text-gray-400 py-16">
+            <Users size={40} className="mx-auto mb-3 opacity-30" />
+            <p className="font-medium">Team members coming soon.</p>
+          </div>
+        ) : (
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {team.map((member, i) => (
+              <TeamCard key={member.id} member={member} index={i} />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* ── CTA ──────────────────────────────────────────── */}
@@ -397,8 +389,6 @@ export default function AboutPage() {
         <div className="absolute inset-0 bg-[#050d1f]" />
         <div className="absolute inset-0 opacity-40"
           style={{ background: 'radial-gradient(ellipse 100% 80% at 50% 50%, #1a4870 0%, transparent 70%)' }} />
-
-   
 
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
           <FadeUp>
@@ -414,8 +404,6 @@ export default function AboutPage() {
             <p className="text-white/40 text-xl mb-4 max-w-xl mx-auto">
               Tell us about your project. We'll respond within 24 hours.
             </p>
-
-           
           </FadeUp>
         </div>
       </section>

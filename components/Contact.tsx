@@ -60,7 +60,7 @@ export default function Contact() {
     'w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3.5 text-[#1a2744] placeholder-gray-400 focus:outline-none focus:border-[#69c8e4] focus:ring-2 focus:ring-[#69c8e4]/20 transition-all duration-200 text-sm font-medium';
 
   return (
-    <section id="contact" className="py-28 bg-gray-50 relative overflow-hidden">
+    <section id="contact" className="py-8 bg-gray-50 relative overflow-hidden">
       <Toaster position="top-center" />
 
       {/* Decorative blobs */}

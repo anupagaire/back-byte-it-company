@@ -8,7 +8,6 @@ import {
   ArrowRight, Loader2,
 } from 'lucide-react';
 
-// Map icon string → Lucide component
 const ICON_MAP: Record<string, React.ElementType> = {
   Code2, Cloud, Brain, Shield, Smartphone, Zap,
   Globe, Database, BarChart2, Lock, Layers, Settings,
@@ -19,6 +18,7 @@ interface Service {
   title: string;
   shortDesc: string;
   details: string;
+  image?: string;
   color: string;
   icon: string;
   order: number;
@@ -26,8 +26,21 @@ interface Service {
 }
 
 const FALLBACK: Service[] = [
-  { id: '2', title: 'Cloud Solutions', shortDesc: 'Scalable AWS, Azure & Google Cloud infrastructure.', details: 'From cloud migrations to multi-region deployments, we architect resilient, cost-efficient cloud systems that scale with your business.', color: '#505f88', icon: 'Cloud', order: 1, published: true },
-  { id: '3', title: 'AI & Machine Learning', shortDesc: 'Intelligent systems that learn and evolve.', details: 'Custom ML models, NLP solutions, computer vision pipelines, and AI-powered automation tools that transform raw data into business value.', color: '#69c8e4', icon: 'Brain', order: 2, published: true },
+  {
+    id: '1', title: 'Custom Software', shortDesc: 'Tailor-made solutions for your business.',
+    details: 'We architect and build scalable software from scratch — APIs, dashboards, and full-stack apps engineered for performance and growth.',
+    color: '#69c8e4', icon: 'Code2', order: 0, published: true,
+  },
+  {
+    id: '2', title: 'Cloud Solutions', shortDesc: 'Scalable AWS, Azure & Google Cloud infrastructure.',
+    details: 'From cloud migrations to multi-region deployments, we architect resilient, cost-efficient cloud systems that scale with your business.',
+    color: '#505f88', icon: 'Cloud', order: 1, published: true,
+  },
+  {
+    id: '3', title: 'AI & Machine Learning', shortDesc: 'Intelligent systems that learn and evolve.',
+    details: 'Custom ML models, NLP solutions, computer vision pipelines, and AI-powered automation tools that transform raw data into business value.',
+    color: '#6366f1', icon: 'Brain', order: 2, published: true,
+  },
 ];
 
 export default function Services() {
@@ -46,16 +59,17 @@ export default function Services() {
   }, []);
 
   return (
-    <section id="services" className="py-8">
-      <div className="max-w-7xl mx-auto px-6">
+    <section className="py-10 bg-[#f8fafc]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
         {/* Header */}
-        <div className="text-center mb-20">
+        <div className="text-center mb-16">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-5xl font-black text-[#1a2744] leading-tight mb-6"
+            className="text-4xl sm:text-5xl font-black text-[#1a2744] leading-tight mb-5"
           >
             Services Built for
             <br />
@@ -68,7 +82,7 @@ export default function Services() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-lg text-gray-500 max-w-xl mx-auto"
+            className="text-base sm:text-lg text-gray-500 max-w-xl mx-auto"
           >
             We don't just deliver code — we deliver outcomes that move your business forward.
           </motion.p>
@@ -83,63 +97,83 @@ export default function Services() {
 
         {/* Cards grid */}
         {!loading && (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((service, i) => {
               const Icon = ICON_MAP[service.icon] || Code2;
               const isHovered = hovered === i;
-              const bg = `from-[${service.color}]/10 to-transparent`;
 
               return (
                 <motion.div
                   key={service.id}
                   initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
+                  viewport={{ once: true, amount: 0.15 }}
                   transition={{ delay: i * 0.08, duration: 0.5 }}
                   onMouseEnter={() => setHovered(i)}
                   onMouseLeave={() => setHovered(null)}
-                  className="relative group p-8 rounded-3xl border-2 cursor-default transition-all duration-300 overflow-hidden"
+                  className="group rounded-3xl overflow-hidden cursor-default flex flex-col"
                   style={{
-                    background: `linear-gradient(135deg, ${service.color}12, transparent)`,
-                    borderColor: `${service.color}50`,
+                    background: '#fff',
+                    boxShadow: isHovered
+                      ? `0 24px 60px ${service.color}30, 0 4px 20px rgba(0,0,0,0.08)`
+                      : '0 2px 16px rgba(0,0,0,0.06)',
                     transform: isHovered ? 'translateY(-8px)' : 'translateY(0)',
-                    boxShadow: isHovered ? `0 20px 50px ${service.color}25` : '0 0 0 transparent',
-                    transition: 'transform 0.3s, box-shadow 0.3s',
+                    transition: 'transform 0.35s ease, box-shadow 0.35s ease',
+                    border: `1.5px solid ${isHovered ? service.color + '40' : '#f0f0f0'}`,
                   }}
                 >
-                  {/* Background glow */}
-                  <div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                    style={{
-                      background: `radial-gradient(circle at 30% 30%, ${service.color}15, transparent 70%)`,
-                    }}
-                  />
+                  {/* ── IMAGE SECTION ── */}
+                  <div className="relative w-full overflow-hidden" style={{ height: '200px' }}>
 
-                  {/* Icon */}
-                  <div
-                    className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110"
-                    style={{ background: `${service.color}20` }}
-                  >
-                    <Icon size={26} style={{ color: service.color }} />
+                    {/* Image or fallback gradient */}
+                    {service.image ? (
+                      <img
+                        src={service.image}
+                        alt={service.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                    ) : (
+                      <div
+                        className="w-full h-full transition-transform duration-700 group-hover:scale-110"
+                        style={{
+                          background: `linear-gradient(135deg, ${service.color}30 0%, ${service.color}60 50%, #1a2744 100%)`,
+                        }}
+                      />
+                    )}
+
+                    {/* Dark overlay — always present, deepens on hover */}
+                    <div
+                      className="absolute inset-0 transition-opacity duration-400"
+                      style={{
+                        background: `linear-gradient(to top, rgba(10,15,30,0.85) 0%, rgba(10,15,30,0.35) 50%, rgba(10,15,30,0.1) 100%)`,
+                        opacity: isHovered ? 1 : 0.75,
+                      }}
+                    />
+
+                    {/* Icon badge — top left */}
+                    <div
+                      className="absolute top-4 left-4 w-11 h-11 rounded-xl flex items-center justify-center backdrop-blur-sm transition-transform duration-300 group-hover:scale-110"
+                      style={{ background: `${service.color}30`, border: `1.5px solid ${service.color}60` }}
+                    >
+                      <Icon size={20} style={{ color: service.color }} />
+                    </div>
+
+                    {/* Title over image */}
+                    <div className="absolute bottom-0 left-0 right-0 p-5">
+                      <h3 className="text-white font-bold text-xl leading-tight drop-shadow-md">
+                        {service.title}
+                      </h3>
+                    </div>
                   </div>
 
-                  <h3 className="text-xl font-bold text-[#1a2744] mb-3">
-                    {service.title}
-                  </h3>
+                  {/* ── CONTENT SECTION ── */}
+                  <div className="flex flex-col flex-1 p-6 pt-5">
+                    {/* Description — toggles on hover */}
+                    <p className="text-gray-500 text-sm leading-relaxed flex-1 transition-all duration-300">
+                      {isHovered ? service.details : service.shortDesc}
+                    </p>
 
-                  <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                    {isHovered ? service.details : service.shortDesc}
-                  </p>
-
-                  <div
-                    className="flex items-center gap-2 text-sm font-semibold transition-colors duration-200"
-                    style={{ color: service.color }}
-                  >
-                    Learn more
-                    <ArrowRight
-                      size={16}
-                      className="transition-transform duration-300 group-hover:translate-x-1"
-                    />
+                    
                   </div>
                 </motion.div>
               );

@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
       details,
       color: color || "#69c8e4",
       icon: icon || "Code2",
+      image: body.image,
       order: order ?? 0,
       published: published ?? true,
     },

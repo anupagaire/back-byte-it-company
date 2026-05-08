@@ -55,7 +55,7 @@ export default function AboutHero() {
         {/* LEFT */}
         <div className="max-w-[460px]">
           <div className="flex items-start gap-4">
-            <div className={styles.barAccent} />
+            
             <h1 className={styles.heading}>Smart Solutions for a Digital Future</h1>
           </div>
           <p className={styles.bodyText}>

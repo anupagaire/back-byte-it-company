@@ -1,74 +1,44 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ExternalLink, Github } from 'lucide-react';
 
-const categories = ['All', 'Web App', 'Mobile', 'AI/ML', 'Cloud'];
-
-const projects = [
-  {
-    title: 'FinFlow Analytics',
-    category: 'Web App',
-    tech: ['Next.js', 'PostgreSQL', 'TailwindCSS'],
-    desc: 'Real-time financial dashboard for a leading fintech startup with 50k+ daily active users.',
-    color: '#69c8e4',
-    emoji: '📊',
-  },
-  {
-    title: 'MediAssist AI',
-    category: 'AI/ML',
-    tech: ['Python', 'TensorFlow', 'FastAPI'],
-    desc: 'AI-powered medical imaging tool that reduced diagnostic time by 60% for hospital chains.',
-    color: '#505f88',
-    emoji: '🧠',
-  },
-  {
-    title: 'LogiTrack Mobile',
-    category: 'Mobile',
-    tech: ['React Native', 'Node.js', 'Redis'],
-    desc: 'Cross-platform logistics tracking app with real-time GPS and 99.9% uptime SLA.',
-    color: '#69c8e4',
-    emoji: '📦',
-  },
-  {
-    title: 'CloudOps Platform',
-    category: 'Cloud',
-    tech: ['AWS', 'Terraform', 'Kubernetes'],
-    desc: 'Multi-region cloud orchestration platform reducing infrastructure cost by 42%.',
-    color: '#505f88',
-    emoji: '☁️',
-  },
-  {
-    title: 'EduLearn LMS',
-    category: 'Web App',
-    tech: ['React', 'Django', 'AWS S3'],
-    desc: 'Online learning platform serving 200,000 students across 15 countries.',
-    color: '#69c8e4',
-    emoji: '🎓',
-  },
-  {
-    title: 'ScanSmart Vision',
-    category: 'AI/ML',
-    tech: ['OpenCV', 'PyTorch', 'Docker'],
-    desc: 'Computer vision system for manufacturing QA — 99.2% defect detection accuracy.',
-    color: '#505f88',
-    emoji: '🔍',
-  },
-];
+interface Project {
+  id: string;
+  title: string;
+  category: string;
+  tech: string[];
+  desc: string;
+  color: string;
+  emoji: string;
+  githubUrl?: string;
+  liveUrl?: string;
+}
 
 export default function Projects() {
+  const [projects, setProjects] = useState<Project[]>([]);
   const [active, setActive] = useState('All');
+  const [categories, setCategories] = useState<string[]>(['All']);
 
-  const filtered =
-    active === 'All' ? projects : projects.filter((p) => p.category === active);
+  useEffect(() => {
+    fetch('/api/projects')
+      .then((r) => r.json())
+      .then((data: Project[]) => {
+        setProjects(data);
+        const cats = ['All', ...Array.from(new Set(data.map((p) => p.category)))];
+        setCategories(cats);
+      })
+      .catch(console.error);
+  }, []);
+
+  const filtered = active === 'All' ? projects : projects.filter((p) => p.category === active);
 
   return (
     <section className="py-8">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-16">
-          
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -109,7 +79,7 @@ export default function Projects() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map((project, i) => (
             <motion.div
-              key={project.title}
+              key={project.id}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: i * 0.07 }}
@@ -127,20 +97,13 @@ export default function Projects() {
               {/* Category badge */}
               <span
                 className="inline-block text-xs font-bold px-3 py-1 rounded-full mb-4"
-                style={{
-                  background: `${project.color}15`,
-                  color: project.color,
-                }}
+                style={{ background: `${project.color}15`, color: project.color }}
               >
                 {project.category}
               </span>
 
-              <h3 className="text-xl font-black text-[#1a2744] mb-3">
-                {project.title}
-              </h3>
-              <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                {project.desc}
-              </p>
+              <h3 className="text-xl font-black text-[#1a2744] mb-3">{project.title}</h3>
+              <p className="text-gray-500 text-sm leading-relaxed mb-6">{project.desc}</p>
 
               {/* Tech stack */}
               <div className="flex flex-wrap gap-2 mb-6">
@@ -154,7 +117,31 @@ export default function Projects() {
                 ))}
               </div>
 
-              
+              {/* Links */}
+              {(project.githubUrl || project.liveUrl) && (
+                <div className="flex gap-3 pt-2 border-t border-gray-100">
+                  {project.githubUrl && (
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-[#1a2744] transition-colors font-medium"
+                    >
+                      <Github size={13} /> GitHub
+                    </a>
+                  )}
+                  {project.liveUrl && (
+                    <a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-[#69c8e4] transition-colors font-medium"
+                    >
+                      <ExternalLink size={13} /> Live Demo
+                    </a>
+                  )}
+                </div>
+              )}
             </motion.div>
           ))}
         </div>

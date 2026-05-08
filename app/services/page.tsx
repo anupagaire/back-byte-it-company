@@ -21,6 +21,8 @@ interface Service {
   shortDesc: string;
   details: string;
   color: string;
+   image?: string;   // ← ADD
+
   icon: string;
   order: number;
   published: boolean;
@@ -94,7 +96,29 @@ function ServiceCard({ service, index }: { service: ServiceWithPerks; index: num
         className="h-0.5 w-0 group-hover:w-full transition-all duration-500 rounded-t-3xl"
         style={{ background: `linear-gradient(90deg, ${service.color}, transparent)` }}
       />
-
+{service.image && (
+        <div className="relative w-full overflow-hidden" style={{ height: '180px' }}>
+          <img
+            src={service.image}
+            alt={service.title}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          />
+          {/* dark overlay */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `linear-gradient(to top, rgba(10,15,30,0.7) 0%, rgba(10,15,30,0.1) 100%)`,
+            }}
+          />
+          {/* icon on image */}
+          <div
+            className="absolute bottom-4 left-4 w-11 h-11 rounded-xl flex items-center justify-center backdrop-blur-sm"
+            style={{ background: `${service.color}30`, border: `1.5px solid ${service.color}60` }}
+          >
+            <Icon size={20} style={{ color: service.color }} />
+          </div>
+        </div>
+      )}
       {/* Radial glow */}
       <div
         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-3xl"
@@ -102,15 +126,17 @@ function ServiceCard({ service, index }: { service: ServiceWithPerks; index: num
       />
 
       <div className="p-8">
-        {/* Icon */}
-        <motion.div
-          whileHover={{ scale: 1.1, rotate: 5 }}
-          transition={{ type: 'spring', stiffness: 400 }}
-          className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
-          style={{ background: `${service.color}18` }}
-        >
-          <Icon size={26} style={{ color: service.color }} />
-        </motion.div>
+        {/* Icon — only show if NO image */}
+        {!service.image && (
+          <motion.div
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            transition={{ type: 'spring', stiffness: 400 }}
+            className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
+            style={{ background: `${service.color}18` }}
+          >
+            <Icon size={26} style={{ color: service.color }} />
+          </motion.div>
+        )}
 
         {/* Title + toggle */}
         <div className="flex items-start justify-between gap-4 mb-3">
@@ -147,7 +173,6 @@ function ServiceCard({ service, index }: { service: ServiceWithPerks; index: num
         {/* Learn more */}
         <div className="flex items-center gap-2 mt-6 text-sm font-bold" style={{ color: service.color }}>
           {open ? 'Close' : 'Learn more'}
-          <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
         </div>
       </div>
     </motion.div>
@@ -186,7 +211,14 @@ export default function ServicesPage() {
   return (
     <div className="bg-white overflow-hidden font-sans">
       <section ref={heroRef} className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-[#050d1f]" />
+        <div className="absolute inset-0">
+    <img
+      src="/5.jpg"  
+      alt="Hero Background"
+      className="w-full h-full object-cover"
+    />
+  </div>
+  <div className="absolute inset-0 z-10 bg-[#050d1f]/60" />
         <div className="absolute inset-0 opacity-50"
           style={{ background: 'radial-gradient(ellipse 80% 60% at 50% -10%, #1a4870 0%, transparent 70%)' }} />
         <div className="absolute inset-0 opacity-20"

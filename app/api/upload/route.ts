@@ -23,5 +23,5 @@ export async function POST(req: Request) {
     ).end(buffer);
   });
 
-  return NextResponse.json(result);
+return NextResponse.json({ url: (result as any).secure_url });
 }

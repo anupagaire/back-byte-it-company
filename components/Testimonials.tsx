@@ -49,7 +49,7 @@ const Testimonials: React.FC = () => {
   const swiperRef = useRef<SwiperType | null>(null);
 
   return (
-    <div id="testimonials" className="w-full py-12 lg:py-4 ">
+    <div id="testimonials" className="w-full py-2 lg:py-4 ">
       <div className="w-full max-w-7xl px-4 lg:px-10 mx-auto text-center">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
