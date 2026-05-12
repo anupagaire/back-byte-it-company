@@ -1,4 +1,3 @@
-// app/api/admin/update-profile/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -19,7 +18,6 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "Email is required" }, { status: 400 });
   }
 
-  // Check if email is taken by another admin
   const existing = await prisma.adminUser.findUnique({ where: { email } });
   if (existing && existing.email !== session.user.email) {
     return NextResponse.json({ error: "Email already in use" }, { status: 409 });

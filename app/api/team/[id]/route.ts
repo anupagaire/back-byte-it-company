@@ -1,4 +1,3 @@
-// app/api/team/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { v2 as cloudinary } from 'cloudinary';
@@ -11,7 +10,6 @@ cloudinary.config({
 
 type Params = Promise<{ id: string }>;
 
-// GET /api/team/[id]
 export async function GET(_: NextRequest, { params }: { params: Params }) {
   const { id } = await params;
   const member = await prisma.teamMember.findUnique({ where: { id } });
@@ -19,7 +17,6 @@ export async function GET(_: NextRequest, { params }: { params: Params }) {
   return NextResponse.json(member);
 }
 
-// PATCH /api/team/[id] — update member (multipart/form-data)
 export async function PATCH(req: NextRequest, { params }: { params: Params }) {
   try {
     const { id } = await params;
@@ -31,9 +28,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Params }) {
     const name = (formData.get('name') as string) || existing.name;
     const role = (formData.get('role') as string) || existing.role;
     const bio = formData.has('bio') ? (formData.get('bio') as string) || null : existing.bio;
-    const linkedin = formData.has('linkedin') ? (formData.get('linkedin') as string) || null : existing.linkedin;
-    const twitter = formData.has('twitter') ? (formData.get('twitter') as string) || null : existing.twitter;
-    const github = formData.has('github') ? (formData.get('github') as string) || null : existing.github;
     const order = formData.has('order') ? parseInt(formData.get('order') as string, 10) : existing.order;
     const published = formData.has('published') ? formData.get('published') !== 'false' : existing.published;
 
@@ -62,7 +56,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Params }) {
 
     const updated = await prisma.teamMember.update({
       where: { id },
-      data: { name, role, bio, photo, photoPublicId, linkedin, twitter, github, order, published },
+      data: { name, role, bio, photo, photoPublicId,  order, published },
     });
 
     return NextResponse.json(updated);
@@ -72,7 +66,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Params }) {
   }
 }
 
-// DELETE /api/team/[id]
 export async function DELETE(_: NextRequest, { params }: { params: Params }) {
   try {
     const { id } = await params;

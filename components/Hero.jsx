@@ -3,7 +3,6 @@ import styles from "./AboutHero.module.css";
 export default function AboutHero() {
   return (
     <section className={styles.page}>
-      {/* ── BACKGROUND SVG CURVES ── */}
       <svg
         className={styles.bgBlobs}
         viewBox="0 0 1440 820"

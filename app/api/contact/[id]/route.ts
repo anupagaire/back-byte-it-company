@@ -6,7 +6,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;  // 👈 await the params
+    const { id } = await params;  
 
     await prisma.contact.delete({
       where: { id },

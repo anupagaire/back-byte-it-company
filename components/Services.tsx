@@ -25,179 +25,138 @@ interface Service {
   published: boolean;
 }
 
-const FALLBACK: Service[] = [
-  {
-    id: '1', title: 'Custom Software', shortDesc: 'Tailor-made solutions for your business.',
-    details: 'We architect and build scalable software from scratch — APIs, dashboards, and full-stack apps engineered for performance and growth.',
-    color: '#69c8e4', icon: 'Code2', order: 0, published: true,
-  },
-  {
-    id: '2', title: 'Cloud Solutions', shortDesc: 'Scalable AWS, Azure & Google Cloud infrastructure.',
-    details: 'From cloud migrations to multi-region deployments, we architect resilient, cost-efficient cloud systems that scale with your business.',
-    color: '#505f88', icon: 'Cloud', order: 1, published: true,
-  },
-  {
-    id: '3', title: 'AI & Machine Learning', shortDesc: 'Intelligent systems that learn and evolve.',
-    details: 'Custom ML models, NLP solutions, computer vision pipelines, and AI-powered automation tools that transform raw data into business value.',
-    color: '#6366f1', icon: 'Brain', order: 2, published: true,
-  },
-];
-
 export default function Services() {
   const [hovered, setHovered] = useState<number | null>(null);
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     fetch('/api/services')
       .then((r) => r.json())
       .then((data: Service[]) => {
-        setServices(data.length > 0 ? data : FALLBACK);
+        setServices(data);
       })
-      .catch(() => setServices(FALLBACK))
+      .catch(() => setServices([]))
       .finally(() => setLoading(false));
   }, []);
 
+  const visibleServices = showAll ? services : services.slice(0, 6);
+
   return (
-    <section className="py-10 bg-[#f8fafc]">
+    <section className="py-12 bg-[#f8fafc]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
-        <div className="text-center mb-16">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-4xl sm:text-5xl font-black text-[#1a2744] leading-tight mb-5"
-          >
+        <div className="text-center mb-14">
+          <h2 className="text-4xl sm:text-5xl font-black text-[#1a2744] mb-4">
             Services Built for
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#69c8e4] to-[#505f88]">
               Real Results
             </span>
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-base sm:text-lg text-gray-500 max-w-xl mx-auto"
-          >
+          </h2>
+          <p className="text-gray-500 max-w-xl mx-auto">
             We don't just deliver code — we deliver outcomes that move your business forward.
-          </motion.p>
+          </p>
         </div>
 
         {/* Loading */}
         {loading && (
-          <div className="flex justify-center items-center py-20">
+          <div className="flex justify-center py-20">
             <Loader2 className="animate-spin text-[#69c8e4]" size={36} />
           </div>
         )}
 
-        {/* Cards grid */}
+        {/* Services */}
         {!loading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((service, i) => {
-              const Icon = ICON_MAP[service.icon] || Code2;
-              const isHovered = hovered === i;
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+              {visibleServices.map((service, i) => {
+                const Icon = ICON_MAP[service.icon] || Code2;
+                const isHovered = hovered === i;
 
-              return (
-                <motion.div
-                  key={service.id}
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.15 }}
-                  transition={{ delay: i * 0.08, duration: 0.5 }}
-                  onMouseEnter={() => setHovered(i)}
-                  onMouseLeave={() => setHovered(null)}
-                  className="group rounded-3xl overflow-hidden cursor-default flex flex-col"
-                  style={{
-                    background: '#fff',
-                    boxShadow: isHovered
-                      ? `0 24px 60px ${service.color}30, 0 4px 20px rgba(0,0,0,0.08)`
-                      : '0 2px 16px rgba(0,0,0,0.06)',
-                    transform: isHovered ? 'translateY(-8px)' : 'translateY(0)',
-                    transition: 'transform 0.35s ease, box-shadow 0.35s ease',
-                    border: `1.5px solid ${isHovered ? service.color + '40' : '#f0f0f0'}`,
-                  }}
+                return (
+                  <motion.div
+                    key={service.id}
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.08 }}
+                    onMouseEnter={() => setHovered(i)}
+                    onMouseLeave={() => setHovered(null)}
+                    className="rounded-3xl overflow-hidden flex flex-col bg-white transition-all duration-300"
+                    style={{
+                      transform: isHovered ? 'translateY(-6px)' : '',
+                      boxShadow: isHovered
+                        ? `0 20px 50px ${service.color}30`
+                        : '0 4px 18px rgba(0,0,0,0.06)',
+                    }}
+                  >
+                    {/* IMAGE */}
+                    <div className="relative h-[200px] overflow-hidden">
+                      {service.image ? (
+                        <img
+                          src={service.image}
+                          className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                        />
+                      ) : (
+                        <div
+                          className="w-full h-full"
+                          style={{
+                            background: `linear-gradient(135deg, ${service.color}, #1a2744)`
+                          }}
+                        />
+                      )}
+
+                      <div className="absolute inset-0 bg-black/40" />
+
+                      {/* ICON */}
+                      <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-md p-2 rounded-xl">
+                        <Icon size={20} color="white" />
+                      </div>
+
+                      {/* TITLE */}
+                      <div className="absolute bottom-4 left-4 right-4">
+                        <h3 className="text-white text-lg font-bold">
+                          {service.title}
+                        </h3>
+                      </div>
+                    </div>
+
+                    {/* CONTENT */}
+                    <div className="p-5 flex flex-col flex-1">
+                      <p className="text-gray-500 text-sm">
+                        {isHovered ? service.details : service.shortDesc}
+                      </p>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* SEE ALL BUTTON */}
+            {services.length > 6 && (
+              <div className="text-center mt-10">
+                <button
+                  onClick={() => setShowAll(!showAll)}
+                  className="px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-[#69c8e4] to-[#505f88] hover:scale-105 transition"
                 >
-                  {/* ── IMAGE SECTION ── */}
-                  <div className="relative w-full overflow-hidden" style={{ height: '200px' }}>
-
-                    {/* Image or fallback gradient */}
-                    {service.image ? (
-                      <img
-                        src={service.image}
-                        alt={service.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
-                    ) : (
-                      <div
-                        className="w-full h-full transition-transform duration-700 group-hover:scale-110"
-                        style={{
-                          background: `linear-gradient(135deg, ${service.color}30 0%, ${service.color}60 50%, #1a2744 100%)`,
-                        }}
-                      />
-                    )}
-
-                    {/* Dark overlay — always present, deepens on hover */}
-                    <div
-                      className="absolute inset-0 transition-opacity duration-400"
-                      style={{
-                        background: `linear-gradient(to top, rgba(10,15,30,0.85) 0%, rgba(10,15,30,0.35) 50%, rgba(10,15,30,0.1) 100%)`,
-                        opacity: isHovered ? 1 : 0.75,
-                      }}
-                    />
-
-                    {/* Icon badge — top left */}
-                    <div
-                      className="absolute top-4 left-4 w-11 h-11 rounded-xl flex items-center justify-center backdrop-blur-sm transition-transform duration-300 group-hover:scale-110"
-                      style={{ background: `${service.color}30`, border: `1.5px solid ${service.color}60` }}
-                    >
-                      <Icon size={20} style={{ color: service.color }} />
-                    </div>
-
-                    {/* Title over image */}
-                    <div className="absolute bottom-0 left-0 right-0 p-5">
-                      <h3 className="text-white font-bold text-xl leading-tight drop-shadow-md">
-                        {service.title}
-                      </h3>
-                    </div>
-                  </div>
-
-                  {/* ── CONTENT SECTION ── */}
-                  <div className="flex flex-col flex-1 p-6 pt-5">
-                    {/* Description — toggles on hover */}
-                    <p className="text-gray-500 text-sm leading-relaxed flex-1 transition-all duration-300">
-                      {isHovered ? service.details : service.shortDesc}
-                    </p>
-
-                    
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
+                  {showAll ? 'Show Less' : 'See All Services'}
+                </button>
+              </div>
+            )}
+          </>
         )}
 
-        {/* Bottom CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mt-16"
-        >
-          <motion.a
+        <div className="text-center mt-16">
+          <a
             href="#contact"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.97 }}
-            className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#69c8e4] to-[#505f88] text-white font-bold text-lg rounded-2xl shadow-lg hover:shadow-[#69c8e4]/30 hover:shadow-xl transition-all duration-300"
+            className="inline-flex items-center gap-2 px-7 py-3 bg-[#1a2744] text-white rounded-xl hover:scale-105 transition"
           >
-            Start a Project
-            <ArrowRight size={20} />
-          </motion.a>
-        </motion.div>
+            Start a Project <ArrowRight size={18} />
+          </a>
+        </div>
+
       </div>
     </section>
   );

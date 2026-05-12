@@ -2,22 +2,17 @@
 
 import { motion, useScroll, useTransform, useInView, animate } from 'framer-motion';
 import Image from 'next/image';
-import { Users, Target, Sparkles, Code2, Globe, Zap, CheckCircle2, Linkedin, Twitter, Github } from 'lucide-react';
+import { Users, Target, Sparkles, Code2, Globe, Zap, CheckCircle2 } from 'lucide-react';
 import { useRef, useEffect, useState } from 'react';
-
-/* ─── Types ─────────────────────────────────────────────── */
 interface TeamMember {
   id: string;
   name: string;
   role: string;
   bio: string | null;
   photo: string | null;
-  linkedin: string | null;
-  twitter: string | null;
-  github: string | null;
+ 
 }
 
-/* ─── Animated Counter ─────────────────────────────────── */
 function Counter({ to, suffix = '' }: { to: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true });
@@ -66,7 +61,6 @@ function FadeUp({ children, delay = 0, className = '' }: { children: React.React
 
 /* ─── Team Member Card ───────────────────────────────────── */
 function TeamCard({ member, index }: { member: TeamMember; index: number }) {
-  const hasSocials = member.linkedin || member.twitter || member.github;
 
   return (
     <FadeUp delay={index * 0.08}>
@@ -101,44 +95,6 @@ function TeamCard({ member, index }: { member: TeamMember; index: number }) {
           <p className="text-gray-400 text-xs mt-3 leading-relaxed line-clamp-2">{member.bio}</p>
         )}
 
-        {/* Social links */}
-        {hasSocials && (
-          <div className="flex justify-center gap-2 pt-4 mt-3 border-t border-gray-100">
-            {member.linkedin && (
-              <a
-                href={member.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={e => e.stopPropagation()}
-                className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-[#69c8e4]/10 hover:text-[#69c8e4] cursor-pointer transition-colors"
-              >
-                <Linkedin size={14} />
-              </a>
-            )}
-            {member.twitter && (
-              <a
-                href={member.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={e => e.stopPropagation()}
-                className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-[#69c8e4]/10 hover:text-[#69c8e4] cursor-pointer transition-colors"
-              >
-                <Twitter size={14} />
-              </a>
-            )}
-            {member.github && (
-              <a
-                href={member.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={e => e.stopPropagation()}
-                className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-[#69c8e4]/10 hover:text-[#69c8e4] cursor-pointer transition-colors"
-              >
-                <Github size={14} />
-              </a>
-            )}
-          </div>
-        )}
       </motion.div>
     </FadeUp>
   );

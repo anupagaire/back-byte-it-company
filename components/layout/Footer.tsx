@@ -30,7 +30,7 @@ export default function Footer() {
                   key={i}
                   href="#"
                   whileHover={{ scale: 1.15, y: -2 }}
-                  className="w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center text-white/40 hover:text-[#69c8e4] hover:border-[#69c8e4]/40 transition-colors"
+                  className="w-9 h-9 rounded-xl border border-white/50 flex items-center justify-center text-white/90 "
                 >
                   <Icon size={16} />
                 </motion.a>
@@ -49,7 +49,7 @@ export default function Footer() {
                   <li key={link}>
                     <a
                       href="#"
-                      className="text-sm text-black/50 hover:text-[#69c8e4] transition-colors font-medium"
+                      className="text-sm text-black/50 hover:text-[#1e2021] transition-colors font-medium"
                     >
                       {link}
                     </a>

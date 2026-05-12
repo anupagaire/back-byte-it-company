@@ -18,7 +18,7 @@ const items = [
   { name: 'Contacts', href: '/admin/contact', icon: Mail },
   { name: 'Careers', href: '/admin/careers', icon: Briefcase },
   { name: 'Projects', href: '/admin/projects', icon: Briefcase },
-    { name: 'Teams', href: '/admin/team', icon: Users },
+  { name: 'Teams', href: '/admin/team', icon: Users },
   { name: 'Applications', href: '/admin/applications', icon: Users },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
 ];
@@ -66,7 +66,9 @@ export default function AdminSidebar() {
               <Link
                 key={item.name}
                 href={item.href}
-                onClick={toggleSidebar}   // mobile ma click garda close
+                onClick={() => {
+                  if (sidebarOpen) toggleSidebar(); // mobile ma matra close
+                }}
                 className={`flex items-center gap-3 px-4 py-3 rounded-2xl transition-all ${
                   active
                     ? 'bg-[#69c8e4] text-black font-semibold'

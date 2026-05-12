@@ -162,16 +162,16 @@ export default function CareersPage() {
           whileInView={{ opacity: 1 }}
           className="text-center mt-20"
         >
-          <p className="text-gray-500 mb-4">
+          {/* <p className="text-gray-500 mb-4">
             Don't see your perfect role? 
-          </p>
-          <Button 
+          </p> */}
+          {/* <Button 
             variant="outline" 
             size="lg"
             className="rounded-2xl px-10 py-6 text-base"
           >
             Send us your CV
-          </Button>
+          </Button> */}
         </motion.div>
       </div>
     </section>

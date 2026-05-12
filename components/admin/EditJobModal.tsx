@@ -66,8 +66,7 @@ export default function EditJobModal({
         <Button variant="outline">Edit</Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-2xl">
-        <DialogHeader>
+<DialogContent className=" max-w-2xl rounded-2xl p-4 md:p-6 max-h-[90vh] overflow-y-auto">        <DialogHeader>
           <DialogTitle>Edit Job</DialogTitle>
         </DialogHeader>
 

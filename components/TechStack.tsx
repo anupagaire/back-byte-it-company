@@ -1,8 +1,5 @@
 'use client';
 
-// TechStack.tsx — Scrolling tech logos strip + process section
-// Place between Services and About sections
-
 import { motion } from 'framer-motion';
 
 const techs = [

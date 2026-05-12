@@ -194,10 +194,9 @@ export default function ServicesPage() {
       .then((r) => r.json())
       .then((data: Service[]) => {
         if (data.length > 0) {
-          // Map API data → ServiceWithPerks (perks extracted from details or empty)
           const mapped: ServiceWithPerks[] = data.map((s) => ({
             ...s,
-            perks: [], // perks not stored in DB — add perks field to schema if needed
+            perks: [], 
           }));
           setServices(mapped);
         } else {

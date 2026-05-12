@@ -1,5 +1,3 @@
-// components/ApplyForm.tsx
-
 'use client';
 
 import { useState } from 'react';

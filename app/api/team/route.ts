@@ -1,4 +1,3 @@
-// app/api/team/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { v2 as cloudinary } from 'cloudinary';
@@ -9,7 +8,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// GET /api/team — returns all published members (or all if ?all=true for admin)
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const showAll = searchParams.get('all') === 'true';
@@ -22,7 +20,6 @@ export async function GET(req: NextRequest) {
   return NextResponse.json(members);
 }
 
-// POST /api/team — create a new team member (multipart/form-data)
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
@@ -30,9 +27,6 @@ export async function POST(req: NextRequest) {
     const name = formData.get('name') as string;
     const role = formData.get('role') as string;
     const bio = (formData.get('bio') as string) || null;
-    const linkedin = (formData.get('linkedin') as string) || null;
-    const twitter = (formData.get('twitter') as string) || null;
-    const github = (formData.get('github') as string) || null;
     const order = parseInt((formData.get('order') as string) || '0', 10);
     const published = formData.get('published') !== 'false';
 
@@ -60,7 +54,7 @@ export async function POST(req: NextRequest) {
     }
 
     const member = await prisma.teamMember.create({
-      data: { name, role, bio, photo, photoPublicId, linkedin, twitter, github, order, published },
+      data: { name, role, bio, photo, photoPublicId, order, published },
     });
 
     return NextResponse.json(member, { status: 201 });

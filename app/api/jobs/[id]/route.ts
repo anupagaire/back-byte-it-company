@@ -1,4 +1,3 @@
-// app/api/jobs/[id]/route.ts
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
@@ -7,7 +6,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;           // ← This is the key fix
+    const { id } = await params;           
     const body = await req.json();
 
     const updated = await prisma.job.update({
@@ -18,7 +17,7 @@ export async function PUT(
         type: body.type,
         department: body.department ?? undefined,
         description: body.description,
-        published: body.published,           // Make sure this field exists in your Prisma schema
+        published: body.published,         
       },
     });
 

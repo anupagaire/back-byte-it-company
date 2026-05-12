@@ -164,7 +164,7 @@ export default function Contact() {
                   </label>
                   <input
                     type="text"
-                    placeholder="John Smith"
+                    placeholder="Name Surname"
                     value={form.name}
                     onChange={(e) => update('name', e.target.value)}
                     required
@@ -177,7 +177,7 @@ export default function Contact() {
                   </label>
                   <input
                     type="email"
-                    placeholder="john@company.com"
+                    placeholder="email"
                     value={form.email}
                     onChange={(e) => update('email', e.target.value)}
                     required
@@ -192,7 +192,7 @@ export default function Contact() {
                 </label>
                 <input
                   type="text"
-                  placeholder="Acme Corporation"
+                  placeholder="Corporation"
                   value={form.company}
                   onChange={(e) => update('company', e.target.value)}
                   className={inputClass}

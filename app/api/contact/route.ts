@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-// CREATE CONTACT
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -37,7 +36,6 @@ export async function POST(req: Request) {
   }
 }
 
-// GET ALL CONTACTS (ADMIN)
 export async function GET() {
   try {
     const contacts = await prisma.contact.findMany({

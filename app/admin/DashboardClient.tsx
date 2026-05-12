@@ -56,7 +56,7 @@ function StatCard({
           background: "#fff",
           border: "1px solid #e5e7eb",
           borderRadius: "16px",
-          padding: "1.5rem",
+          padding: "1.25rem",
           display: "flex",
           alignItems: "center",
           gap: "1rem",
@@ -64,8 +64,7 @@ function StatCard({
           cursor: "pointer",
         }}
         onMouseEnter={(e) => {
-          (e.currentTarget as HTMLDivElement).style.boxShadow =
-            "0 4px 20px rgba(0,0,0,0.08)";
+          (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 20px rgba(0,0,0,0.08)";
           (e.currentTarget as HTMLDivElement).style.transform = "translateY(-2px)";
         }}
         onMouseLeave={(e) => {
@@ -75,14 +74,14 @@ function StatCard({
       >
         <div
           style={{
-            width: "48px",
-            height: "48px",
+            width: "44px",
+            height: "44px",
             borderRadius: "12px",
             background: color,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: "22px",
+            fontSize: "20px",
             flexShrink: 0,
           }}
         >
@@ -92,7 +91,7 @@ function StatCard({
           <p
             style={{
               margin: 0,
-              fontSize: "0.8rem",
+              fontSize: "0.72rem",
               color: "#6b7280",
               fontWeight: 500,
               textTransform: "uppercase",
@@ -104,7 +103,7 @@ function StatCard({
           <p
             style={{
               margin: "2px 0 0",
-              fontSize: "1.75rem",
+              fontSize: "1.6rem",
               fontWeight: 700,
               color: "#111827",
               lineHeight: 1,
@@ -133,9 +132,10 @@ function StatusBadge({ status }: { status: string }) {
         color: c.text,
         padding: "2px 10px",
         borderRadius: "999px",
-        fontSize: "0.75rem",
+        fontSize: "0.72rem",
         fontWeight: 600,
         textTransform: "capitalize",
+        whiteSpace: "nowrap",
       }}
     >
       {status}
@@ -159,53 +159,69 @@ export default function DashboardClient({
   recentApplications,
 }: Props) {
   const statCards = [
-    {
-      label: "Total Contacts",
-      value: stats.totalContacts,
-      icon: "✉️",
-      color: "#ede9fe",
-      href: "/admin/contacts",
-    },
-    {
-      label: "Job Listings",
-      value: stats.totalJobs,
-      icon: "💼",
-      color: "#dbeafe",
-      href: "/admin/jobs",
-    },
-    {
-      label: "Applications",
-      value: stats.totalApplications,
-      icon: "📋",
-      color: "#d1fae5",
-      href: "/admin/applications",
-    },
-    {
-      label: "Pending Review",
-      value: stats.pendingApplications,
-      icon: "⏳",
-      color: "#fef3c7",
-      href: "/admin/applications",
-    },
-    
+    { label: "Total Contacts", value: stats.totalContacts, icon: "✉️", color: "#ede9fe", href: "/admin/contact" },
+    { label: "Job Listings", value: stats.totalJobs, icon: "💼", color: "#dbeafe", href: "/admin/jobs" },
+    { label: "Applications", value: stats.totalApplications, icon: "📋", color: "#d1fae5", href: "/admin/applications" },
+    { label: "Pending Review", value: stats.pendingApplications, icon: "⏳", color: "#fef3c7", href: "/admin/applications" },
   ];
 
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif", maxWidth: "1200px" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
+        .stat-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 0.75rem;
+          margin-bottom: 1.5rem;
+        }
+
+        .tables-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1.25rem;
+        }
+
+        @media (min-width: 640px) {
+          .stat-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .stat-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+          }
+          .tables-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+        }
+
+        @media (max-width: 767px) {
+          .tables-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
+
       {/* Header */}
       <div
         style={{
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          marginBottom: "2rem",
+          marginBottom: "1.5rem",
         }}
       >
         <div>
           <h1
             style={{
               margin: 0,
-              fontSize: "1.75rem",
+              fontSize: "clamp(1.25rem, 4vw, 1.75rem)",
               fontWeight: 700,
               color: "#111827",
               letterSpacing: "-0.02em",
@@ -213,35 +229,21 @@ export default function DashboardClient({
           >
             Good day, {adminName} 👋
           </h1>
-          <p style={{ margin: "4px 0 0", color: "#6b7280", fontSize: "0.9rem" }}>
+          <p style={{ margin: "4px 0 0", color: "#6b7280", fontSize: "0.875rem" }}>
             Here's what's happening across your platform
           </p>
         </div>
-        
       </div>
 
-      {/* Stat cards */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: "1rem",
-          marginBottom: "2rem",
-        }}
-      >
+      {/* Stat Cards */}
+      <div className="stat-grid">
         {statCards.map((s) => (
           <StatCard key={s.label} {...s} />
         ))}
       </div>
 
-      {/* Two column tables */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "1.5rem",
-        }}
-      >
+      {/* Tables */}
+      <div className="tables-grid">
         {/* Recent Contacts */}
         <div
           style={{
@@ -253,18 +255,18 @@ export default function DashboardClient({
         >
           <div
             style={{
-              padding: "1.25rem 1.5rem",
+              padding: "1rem 1.25rem",
               borderBottom: "1px solid #f3f4f6",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
             }}
           >
-            <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 600, color: "#111827" }}>
+            <h2 style={{ margin: 0, fontSize: "0.95rem", fontWeight: 600, color: "#111827" }}>
               Recent Contacts
             </h2>
             <Link
-              href="/admin/contacts"
+              href="/admin/contact"
               style={{ fontSize: "0.8rem", color: "#6366f1", textDecoration: "none", fontWeight: 500 }}
             >
               View all →
@@ -280,7 +282,7 @@ export default function DashboardClient({
                 <div
                   key={c.id}
                   style={{
-                    padding: "1rem 1.5rem",
+                    padding: "0.875rem 1.25rem",
                     borderBottom: i < recentContacts.length - 1 ? "1px solid #f9fafb" : "none",
                     display: "flex",
                     alignItems: "center",
@@ -289,14 +291,14 @@ export default function DashboardClient({
                 >
                   <div
                     style={{
-                      width: "36px",
-                      height: "36px",
+                      width: "34px",
+                      height: "34px",
                       borderRadius: "50%",
                       background: "#ede9fe",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontSize: "0.875rem",
+                      fontSize: "0.8rem",
                       fontWeight: 700,
                       color: "#7c3aed",
                       flexShrink: 0,
@@ -305,7 +307,7 @@ export default function DashboardClient({
                     {c.name[0].toUpperCase()}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ margin: 0, fontSize: "0.875rem", fontWeight: 600, color: "#111827" }}>
+                    <p style={{ margin: 0, fontSize: "0.85rem", fontWeight: 600, color: "#111827" }}>
                       {c.name}
                     </p>
                     <p
@@ -321,7 +323,7 @@ export default function DashboardClient({
                       {c.email}
                     </p>
                   </div>
-                  <span style={{ fontSize: "0.75rem", color: "#9ca3af", flexShrink: 0 }}>
+                  <span style={{ fontSize: "0.72rem", color: "#9ca3af", flexShrink: 0 }}>
                     {timeAgo(c.createdAt)}
                   </span>
                 </div>
@@ -341,14 +343,14 @@ export default function DashboardClient({
         >
           <div
             style={{
-              padding: "1.25rem 1.5rem",
+              padding: "1rem 1.25rem",
               borderBottom: "1px solid #f3f4f6",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
             }}
           >
-            <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 600, color: "#111827" }}>
+            <h2 style={{ margin: 0, fontSize: "0.95rem", fontWeight: 600, color: "#111827" }}>
               Recent Applications
             </h2>
             <Link
@@ -368,7 +370,7 @@ export default function DashboardClient({
                 <div
                   key={a.id}
                   style={{
-                    padding: "1rem 1.5rem",
+                    padding: "0.875rem 1.25rem",
                     borderBottom: i < recentApplications.length - 1 ? "1px solid #f9fafb" : "none",
                     display: "flex",
                     alignItems: "center",
@@ -377,14 +379,14 @@ export default function DashboardClient({
                 >
                   <div
                     style={{
-                      width: "36px",
-                      height: "36px",
+                      width: "34px",
+                      height: "34px",
                       borderRadius: "50%",
                       background: "#d1fae5",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontSize: "0.875rem",
+                      fontSize: "0.8rem",
                       fontWeight: 700,
                       color: "#065f46",
                       flexShrink: 0,
@@ -393,7 +395,7 @@ export default function DashboardClient({
                     {a.name[0].toUpperCase()}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ margin: 0, fontSize: "0.875rem", fontWeight: 600, color: "#111827" }}>
+                    <p style={{ margin: 0, fontSize: "0.85rem", fontWeight: 600, color: "#111827" }}>
                       {a.name}
                     </p>
                     <p
@@ -416,8 +418,6 @@ export default function DashboardClient({
           </div>
         </div>
       </div>
-
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');`}</style>
     </div>
   );
 }

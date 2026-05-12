@@ -1,10 +1,9 @@
-// app/careers/[id]/apply/page.tsx
 
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import ApplyForm from '@/components/ApplyForm';   // We'll adjust this
+import ApplyForm from '@/components/ApplyForm';  
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';

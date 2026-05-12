@@ -1,6 +1,4 @@
-// scripts/create-admin.ts
-// Run with: npx ts-node scripts/create-admin.ts
-// Or: npx tsx scripts/create-admin.ts
+
 
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";

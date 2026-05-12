@@ -4,26 +4,20 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import {
   Plus, Pencil, Trash2, X, Upload, Eye, EyeOff,
-  Loader2, User, GripVertical, Linkedin, Twitter, Github,
-  CheckCircle2, AlertCircle
+  Loader2, User, GripVertical,   CheckCircle2, AlertCircle
 } from 'lucide-react';
 
-/* ─── Types ─────────────────────────────────────────────── */
 interface TeamMember {
   id: string;
   name: string;
   role: string;
   bio: string | null;
   photo: string | null;
-  linkedin: string | null;
-  twitter: string | null;
-  github: string | null;
   order: number;
   published: boolean;
   createdAt: string;
 }
 
-/* ─── Toast ──────────────────────────────────────────────── */
 function Toast({ msg, type, onClose }: { msg: string; type: 'success' | 'error'; onClose: () => void }) {
   useEffect(() => {
     const t = setTimeout(onClose, 3500);
@@ -83,9 +77,6 @@ function MemberModal({
     name: member?.name || '',
     role: member?.role || '',
     bio: member?.bio || '',
-    linkedin: member?.linkedin || '',
-    twitter: member?.twitter || '',
-    github: member?.github || '',
     order: String(member?.order ?? 0),
     published: member?.published ?? true,
   });
@@ -117,7 +108,6 @@ function MemberModal({
       const saved: TeamMember = await res.json();
       onSaved(saved);
     } catch {
-      // parent handles error display
     } finally {
       setLoading(false);
     }
@@ -126,7 +116,6 @@ function MemberModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
           <h2 className="text-xl font-black text-[#1a2744]">
             {isEdit ? 'Edit Member' : 'Add Team Member'}
@@ -137,7 +126,6 @@ function MemberModal({
         </div>
 
         <div className="p-6 space-y-5">
-          {/* Photo upload */}
           <div className="flex flex-col items-center gap-3">
             <div
               className="relative w-28 h-28 rounded-2xl overflow-hidden bg-gray-50 border-2 border-dashed border-gray-200 cursor-pointer hover:border-[#69c8e4] transition-colors group"
@@ -159,7 +147,6 @@ function MemberModal({
             <p className="text-xs text-gray-400">JPG, PNG, WEBP · Max 5MB · Auto-cropped to square</p>
           </div>
 
-          {/* Fields */}
           {[
             { key: 'name', label: 'Full Name *', placeholder: 'Alex Carter' },
             { key: 'role', label: 'Role / Title *', placeholder: 'Lead Engineer' },
@@ -187,26 +174,7 @@ function MemberModal({
             />
           </div>
 
-          {/* Social Links */}
-          <div className="grid grid-cols-3 gap-3">
-            {[
-              { key: 'linkedin', label: 'LinkedIn', icon: Linkedin, placeholder: 'linkedin.com/in/...' },
-              { key: 'twitter', label: 'Twitter', icon: Twitter, placeholder: '@handle' },
-              { key: 'github', label: 'GitHub', icon: Github, placeholder: 'github.com/...' },
-            ].map(({ key, label, icon: Icon, placeholder }) => (
-              <div key={key}>
-                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5 flex items-center gap-1">
-                  <Icon size={10} /> {label}
-                </label>
-                <input
-                  value={form[key as keyof typeof form] as string}
-                  onChange={e => set(key as keyof typeof form, e.target.value)}
-                  placeholder={placeholder}
-                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-[#1a2744] text-xs focus:outline-none focus:ring-2 focus:ring-[#69c8e4]/40 focus:border-[#69c8e4] transition"
-                />
-              </div>
-            ))}
-          </div>
+         
 
           {/* Order & Published */}
           <div className="flex items-center gap-4">

@@ -17,7 +17,6 @@ export default function AdminContactsPage() {
 
   const [selected, setSelected] = useState<any | null>(null);
 
-  // FETCH DATA
   const fetchContacts = async () => {
     const res = await fetch('/api/contact');
     const data = await res.json();
@@ -29,7 +28,6 @@ export default function AdminContactsPage() {
     fetchContacts();
   }, []);
 
-  // DELETE
   const deleteContact = async (id: string) => {
     const res = await fetch(`/api/contact/${id}`, {
       method: 'DELETE',
@@ -43,7 +41,6 @@ export default function AdminContactsPage() {
     }
   };
 
-  // EXPORT CSV
   const exportToCSV = () => {
     const headers = ['Name', 'Email', 'Service', 'Message', 'Date'];
 
@@ -67,7 +64,6 @@ export default function AdminContactsPage() {
     document.body.removeChild(link);
   };
 
-  // FILTER LOGIC
   const filtered = contacts.filter((c) => {
     const matchSearch =
       c.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -79,7 +75,6 @@ export default function AdminContactsPage() {
     return matchSearch && matchService;
   });
 
-  // PAGINATION
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
 
   const paginated = filtered.slice(
@@ -90,14 +85,12 @@ export default function AdminContactsPage() {
   return (
     <div className="p-10">
 
-      {/* HEADER */}
       <div className="flex flex-col gap-4 mb-6">
 
         <h1 className="text-3xl font-black text-[#1a2744]">
           Contact Messages
         </h1>
 
-        {/* FILTER BAR */}
         <div className="flex flex-wrap gap-3">
 
           <input

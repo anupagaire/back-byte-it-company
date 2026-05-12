@@ -1,9 +1,7 @@
-// app/api/apply/route.ts
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { v2 as cloudinary } from 'cloudinary';
 
-// Configure Cloudinary (add these to your .env)
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -37,6 +35,8 @@ export async function POST(req: Request) {
             resource_type: 'auto',        // allows pdf, doc, etc.
             folder: 'job_applications',
             allowed_formats: ['pdf', 'doc', 'docx'],
+                  access_mode: 'public', // ← यो add गर
+
           },
           (error, result) => {
             if (error) reject(error);
