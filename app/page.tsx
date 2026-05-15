@@ -6,6 +6,8 @@ import Testimonials from '@/components/Testimonials';
 import Contact from '@/components/Contact';
 import About1 from '@/components/About1';
 import TechStack from '@/components/TechStack';
+import PricingTeaser from "@/components/PricingTeaser";
+
 export default function Home() {
   return (
     <div className=" min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
@@ -14,6 +16,7 @@ export default function Home() {
     <About1 />
       <Services />
       <TechStack />
+      <PricingTeaser />
       <Projects />
       <Testimonials />
       <Contact />

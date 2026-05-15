@@ -1,14 +1,36 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Github, Linkedin, Twitter, ArrowUp } from 'lucide-react';
+import {  Linkedin, Twitter, ArrowUp } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link'; 
 
 const footerLinks = {
-  Services: ['Custom Software', 'Cloud Solutions', 'AI & ML', 'Cybersecurity', 'Mobile Apps'],
-  Company: ['About Us', 'Our Work', 'Blog', 'Careers', 'Contact'],
-  Legal: ['Privacy Policy', 'Terms of Service', 'Cookie Policy'],
+  Services: [
+    { name: 'Custom Software', href: '/services/software' },
+    { name: 'Cloud Solutions', href: '/services/cloud' },
+    { name: 'AI & ML', href: '/services/ai-ml' },
+    { name: 'Cybersecurity', href: '/services/cybersecurity' },
+    { name: 'Mobile Apps', href: '/services/mobile' },
+  ],
+  Company: [
+    { name: 'About Us', href: '/about' },
+    { name: 'Services', href: '/services' },
+    { name: 'Blog', href: '/blog' },
+    { name: 'Careers', href: '/careers' },
+    { name: 'Contact', href: '/#contact' },
+  ],
+  Legal: [
+    { name: 'Privacy Policy', href: '/privacy' },
+    { name: 'Terms of Service', href: '/terms' },
+    { name: 'Cookie Policy', href: '/cookies' },
+  ],
 };
+
+const socialLinks = [
+  { Icon: Twitter, href: 'https://twitter.com/backbyte' },
+  { Icon: Linkedin, href: 'https://linkedin.com/company/backbyte' },
+];
 
 export default function Footer() {
   const scrollTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -19,18 +41,28 @@ export default function Footer() {
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <Image src="/logo.png" alt="Logo" width={150} height={50} className="mb-6" />
+            <Link href="/">
+              <Image 
+                src="/logo.png" 
+                alt="Back ByteTech Logo" 
+                width={150} 
+                height={50} 
+                className="mb-6 cursor-pointer" 
+              />
+            </Link>
             <p className="text-black text-sm leading-relaxed max-w-xs mb-6">
               Innovative IT solutions that transform businesses into digital leaders. 
               From idea to production, we've got you covered.
             </p>
             <div className="flex gap-3">
-              {[Github, Twitter, Linkedin].map((Icon, i) => (
+              {socialLinks.map(({ Icon, href }, i) => (
                 <motion.a
                   key={i}
-                  href="#"
+                  href={href}
+                  target="_blank" // Opens social media in new tab
+                  rel="noopener noreferrer"
                   whileHover={{ scale: 1.15, y: -2 }}
-                  className="w-9 h-9 rounded-xl border border-white/50 flex items-center justify-center text-white/90 "
+                  className="w-9 h-9 rounded-xl border border-black/20 flex items-center justify-center text-black/80 hover:bg-black hover:text-white transition-all"
                 >
                   <Icon size={16} />
                 </motion.a>
@@ -46,13 +78,13 @@ export default function Footer() {
               </h4>
               <ul className="space-y-3">
                 {links.map((link) => (
-                  <li key={link}>
-                    <a
-                      href="#"
-                      className="text-sm text-black/50 hover:text-[#1e2021] transition-colors font-medium"
+                  <li key={link.name}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-black/60 hover:text-black transition-colors font-medium"
                     >
-                      {link}
-                    </a>
+                      {link.name}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -61,14 +93,14 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="border-t border-black/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-black text-sm">
             © {new Date().getFullYear()} Back ByteTech. All rights reserved.
           </p>
           <motion.button
             onClick={scrollTop}
             whileHover={{ scale: 1.1, y: -2 }}
-            className="flex items-center gap-2 text-xs text-black/40 hover:text-[#69c8e4] font-semibold transition-colors"
+            className="flex items-center gap-2 text-xs text-black/50 hover:text-black font-bold transition-colors"
           >
             Back to top
             <ArrowUp size={14} />

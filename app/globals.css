@@ -161,3 +161,40 @@ body {
   transform: translateY(-12px) scale(1.02);
   box-shadow: 0 25px 50px -12px rgb(129 140 248 / 0.25);
 }
+
+
+
+
+
+/* styles/slider.css  — import in your globals.css or layout */
+/* Custom range input thumb */
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #0ea5e9;
+  cursor: pointer;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.25);
+  transition: box-shadow 0.15s;
+}
+
+input[type='range']::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 0 6px rgba(14, 165, 233, 0.25);
+}
+
+input[type='range']::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #0ea5e9;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.25);
+}
+
+input[type='range']:focus {
+  outline: none;
+}

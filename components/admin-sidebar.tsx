@@ -19,6 +19,8 @@ const items = [
   { name: 'Careers', href: '/admin/careers', icon: Briefcase },
   { name: 'Projects', href: '/admin/projects', icon: Briefcase },
   { name: 'Teams', href: '/admin/team', icon: Users },
+  { name: 'Pricing', href: '/admin/pricing-leads', icon: Briefcase },
+
   { name: 'Applications', href: '/admin/applications', icon: Users },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
 ];

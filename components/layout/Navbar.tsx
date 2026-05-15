@@ -3,18 +3,18 @@
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 
 const navLinks = [
   { name: 'Home', href: '/' },
   { name: 'Services', href: '/services' },
-  { name: 'About', href: '/about' }, 
-   { name: 'Careers', href: '/careers' },
-
-  { name: 'Testimonials', href: '/#testimonials' },
+  { name: 'About', href: '/about' },
+  { name: 'Careers', href: '/careers' },
   { name: 'Contact', href: '/#contact' },
+    { name: 'Pricing', href: '/pricing' },
+
 ];
 
 export default function Navbar() {
@@ -22,8 +22,20 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
 
+  // ✅ optimized scroll listener
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 50);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -35,7 +47,7 @@ export default function Navbar() {
     <motion.nav
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6 }}
+      transition={{ duration: 0.3 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         transparent
           ? 'bg-transparent'
@@ -46,7 +58,7 @@ export default function Navbar() {
 
         {/* LOGO */}
         <Link href="/">
-          <motion.div whileHover={{ scale: 1.05 }}>
+          <div className="hover:scale-105 transition-transform duration-200">
             <Image
               src="/logo.png"
               alt="Logo"
@@ -54,37 +66,35 @@ export default function Navbar() {
               height={40}
               className="object-contain"
             />
-          </motion.div>
+          </div>
         </Link>
 
         {/* DESKTOP MENU */}
-        <div className="hidden md:flex items-center gap-1">
-          {navLinks.map((link, i) => {
+        <div className="hidden md:flex items-center gap-2">
+          {navLinks.map((link) => {
             const isActive = pathname === link.href;
+            const isPricing = link.href === '/pricing';
 
             return (
-              <motion.div
-                key={link.name}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05 + i * 0.05 }}
-              >
+              <div key={link.name}>
                 <Link
                   href={link.href}
-                  className={`relative px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                    isActive
-                      ? 'text-[#69c8e4]'
-                      : transparent
-                      ? 'text-black hover:text-[#69c8e4]'
-                      : 'text-[#505f88] hover:text-[#69c8e4]'
-                  }`}
+                  className={`
+                    relative px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200
+                    ${
+                      isPricing
+                        ? 'bg-[#69c8e4] text-white hover:bg-[#4fb7d6] shadow-md'
+                        : isActive
+                        ? 'text-[#69c8e4]'
+                        : transparent
+                        ? 'text-black hover:text-[#69c8e4]'
+                        : 'text-[#505f88] hover:text-[#69c8e4]'
+                    }
+                  `}
                 >
                   {link.name}
-
-                  {/* underline animation */}
-                  <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-[#69c8e4] rounded-full transition-all duration-300 group-hover:w-4" />
                 </Link>
-              </motion.div>
+              </div>
             );
           })}
         </div>
@@ -96,51 +106,41 @@ export default function Navbar() {
             transparent ? 'text-white' : 'text-[#505f88]'
           }`}
         >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={isOpen ? 'x' : 'menu'}
-              initial={{ rotate: -90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: 90, opacity: 0 }}
-            >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </motion.div>
-          </AnimatePresence>
+          {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
-      {/* MOBILE MENU */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="md:hidden bg-white border-t border-[#69c8e4]/20 overflow-hidden"
-          >
-            <div className="px-6 py-4 flex flex-col gap-2">
-              {navLinks.map((link) => {
-                const isActive = pathname === link.href;
+      {/* MOBILE MENU (lightweight - no height animation) */}
+      {isOpen && (
+        <div className="md:hidden bg-white border-t border-[#69c8e4]/20">
+          <div className="px-6 py-4 flex flex-col gap-2">
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href;
+              const isPricing = link.href === '/pricing';
 
-                return (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    onClick={() => setIsOpen(false)}
-                    className={`px-4 py-3 rounded-xl font-semibold ${
-                      isActive
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className={`
+                    px-4 py-3 rounded-xl font-semibold transition-all
+                    ${
+                      isPricing
+                        ? 'bg-[#69c8e4] text-white text-center'
+                        : isActive
                         ? 'text-[#69c8e4]'
                         : 'text-black hover:text-[#69c8e4]'
-                    }`}
-                  >
-                    {link.name}
-                  </Link>
-                );
-              })}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                    }
+                  `}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </motion.nav>
   );
 }

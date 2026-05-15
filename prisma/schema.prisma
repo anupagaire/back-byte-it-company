@@ -100,3 +100,44 @@ model TeamMember {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
+
+model PricingLead {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  email         String
+  name          String?
+  company       String?
+  phone         String?
+
+  // Service selection
+  serviceType   String   // "web_app" | "mobile_app" | "cloud_cyber" | "digital_marketing"
+  serviceLabel  String   // Human-readable label
+
+  // Shared fields
+  timeline      String   // "standard" | "express"
+  estimatedPrice Float
+
+  // Web / Mobile App fields
+  pages         Int?
+  hasAuth       Boolean? @default(false)
+  hasPayments   Boolean? @default(false)
+  backendType   String?  // "simple" | "complex"
+
+  // Cloud / Cyber fields
+  servers       Int?
+  complianceLevel String? // "none" | "iso" | "soc2" | "both"
+  auditFrequency  String? // "quarterly" | "biannual" | "annual"
+
+  // Digital Marketing fields
+  platforms     Int?
+  adSpendBudget String?  // "under_1k" | "1k_5k" | "5k_20k" | "20k_plus"
+  contentFreq   String?  // "weekly" | "biweekly" | "monthly"
+
+  // Metadata
+  status        String   @default("new")  // "new" | "contacted" | "converted" | "lost"
+  notes         String?
+  pdfGenerated  Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("pricing_leads")
+}
