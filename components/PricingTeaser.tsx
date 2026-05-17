@@ -237,7 +237,7 @@ export default function PricingTeaser() {
               Get full breakdown →
             </Link>
             <Link
-              href="/contact"
+              href="/#contact"
               className="px-5 py-3 rounded-xl border border-slate-700 text-sm font-medium hover:border-slate-500 transition-all"
             >
               Book a call

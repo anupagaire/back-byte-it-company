@@ -41,7 +41,7 @@ export default function StepIndicator({ current }: Props) {
             </div>
             {i < STEPS.length - 1 && (
               <div
-                className={`w-16 md:w-24 h-px mx-2 mb-5 transition-all duration-500 ${
+                className={`w-12 md:w-24 h-px mx-2 mb-5 transition-all duration-500 ${
                   done ? "bg-sky-500" : "bg-slate-700"
                 }`}
               />
