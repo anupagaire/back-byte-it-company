@@ -68,12 +68,14 @@ model Service {
   shortDesc   String
   details     String
   image       String?  
+  pricingConfig PricingConfig?
   color       String   @default("#69c8e4")
   icon        String   @default("Code2")
   order       Int      @default(0)
   published   Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
 }
 model Project {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -82,8 +84,6 @@ model Project {
   tech      String[]
   desc      String
   published Boolean  @default(true)
-  githubUrl String?
-  liveUrl   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -140,4 +140,44 @@ model PricingLead {
   updatedAt     DateTime @updatedAt
 
   @@map("pricing_leads")
+}
+
+model PricingConfig {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  
+  serviceId   String   @unique @db.ObjectId
+  service     Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  serviceType   String   
+  baseRate      Float
+
+  // Per-unit cost (per page / per server / per platform)
+  unitCost      Float
+
+  // Shape: { standard: 1.0, express: 1.35, simple: 1.0, complex: 1.55, ... }
+  multipliers   Json
+
+  label         String   // "Web Application"
+  unitLabel     String   // "pages" | "screens" | "servers" | "platforms"
+  unitMax       Int      @default(20)
+
+  published     Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("pricing_configs")
+}
+
+model Testimonial {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  role      String
+  image     String?
+  message   String
+  order     Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("testimonials")
 }

@@ -6,17 +6,10 @@ import Image from 'next/image';
 import Link from 'next/link'; 
 
 const footerLinks = {
-  Services: [
-    { name: 'Custom Software', href: '/services/software' },
-    { name: 'Cloud Solutions', href: '/services/cloud' },
-    { name: 'AI & ML', href: '/services/ai-ml' },
-    { name: 'Cybersecurity', href: '/services/cybersecurity' },
-    { name: 'Mobile Apps', href: '/services/mobile' },
-  ],
   Company: [
     { name: 'About Us', href: '/about' },
     { name: 'Services', href: '/services' },
-    { name: 'Blog', href: '/blog' },
+    { name: 'Pricing', href: '/pricing' },
     { name: 'Careers', href: '/careers' },
     { name: 'Contact', href: '/#contact' },
   ],
@@ -38,7 +31,7 @@ export default function Footer() {
   return (
     <footer className="bg-[#69c8e4] text-black">
       <div className="max-w-7xl mx-auto px-6 pt-20 pb-10">
-        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           {/* Brand */}
           <div className="lg:col-span-2">
             <Link href="/">

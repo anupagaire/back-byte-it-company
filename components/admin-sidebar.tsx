@@ -15,11 +15,15 @@ import {
 const items = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'Services', href: '/admin/services', icon: Mail },
-  { name: 'Contacts', href: '/admin/contact', icon: Mail },
+  { name: 'Contacts', href: '/admin/contact', icon: Mail }, 
+   { name: 'Testimonials', href: '/admin/testimonials', icon: Mail },
+
   { name: 'Careers', href: '/admin/careers', icon: Briefcase },
   { name: 'Projects', href: '/admin/projects', icon: Briefcase },
   { name: 'Teams', href: '/admin/team', icon: Users },
   { name: 'Pricing', href: '/admin/pricing-leads', icon: Briefcase },
+    { name: 'Pricing Calculate', href: '/admin/pricing-config', icon: Briefcase },
+
 
   { name: 'Applications', href: '/admin/applications', icon: Users },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
@@ -39,7 +43,6 @@ export default function AdminSidebar() {
         />
       )}
 
-      {/* Sidebar */}
       <div className={`
         fixed top-0 left-0 h-screen w-64 bg-[#0f172a] text-white p-6 shadow-2xl z-50
         transform transition-transform duration-300
@@ -50,7 +53,6 @@ export default function AdminSidebar() {
         <div className="mb-10 flex items-center justify-between">
           <h1 className="text-2xl font-black text-[#69c8e4]">BackByte</h1>
           
-          {/* Close button only for mobile */}
           <button 
             onClick={toggleSidebar}
             className="md:hidden text-gray-400 hover:text-white"

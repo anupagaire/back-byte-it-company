@@ -12,7 +12,6 @@ export default function LegalLayout({ children, title, lastUpdated }: { children
     <div className="bg-white min-h-screen pt-16 md:pt-24 pb-20">
       <div className="max-w-7xl mx-auto px-6">
         
-        {/* Mobile Navigation - Horizontal Scroll */}
         <div className="lg:hidden mb-8 border-b border-gray-100 pb-4 overflow-x-auto no-scrollbar flex gap-6 whitespace-nowrap">
           {legalLinks.map((link) => (
             <Link 

@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { ExternalLink, Github } from 'lucide-react';
 
 interface Project {
   id: string;
@@ -11,9 +10,6 @@ interface Project {
   tech: string[];
   desc: string;
   color: string;
-  emoji: string;
-  githubUrl?: string;
-  liveUrl?: string;
 }
 
 export default function Projects() {
@@ -86,15 +82,8 @@ export default function Projects() {
               whileHover={{ y: -6 }}
               className="group bg-gray-50 rounded-3xl p-8 border border-gray-100 hover:border-gray-200 hover:shadow-xl transition-all duration-300 cursor-default"
             >
-              {/* Emoji icon */}
-              <div
-                className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-6 transition-transform duration-300 group-hover:scale-110"
-                style={{ background: `${project.color}15` }}
-              >
-                {project.emoji}
-              </div>
+              
 
-              {/* Category badge */}
               <span
                 className="inline-block text-xs font-bold px-3 py-1 rounded-full mb-4"
                 style={{ background: `${project.color}15`, color: project.color }}
@@ -117,31 +106,7 @@ export default function Projects() {
                 ))}
               </div>
 
-              {/* Links */}
-              {(project.githubUrl || project.liveUrl) && (
-                <div className="flex gap-3 pt-2 border-t border-gray-100">
-                  {project.githubUrl && (
-                    <a
-                      href={project.githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-[#1a2744] transition-colors font-medium"
-                    >
-                      <Github size={13} /> GitHub
-                    </a>
-                  )}
-                  {project.liveUrl && (
-                    <a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-[#69c8e4] transition-colors font-medium"
-                    >
-                      <ExternalLink size={13} /> Live Demo
-                    </a>
-                  )}
-                </div>
-              )}
+            
             </motion.div>
           ))}
         </div>

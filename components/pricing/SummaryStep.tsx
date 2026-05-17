@@ -111,22 +111,7 @@ export default function SummaryStep({ config, breakdown, onBack }: Props) {
           </div>
         </div>
 
-        {/* Tech stack */}
-        <div className="rounded-2xl border border-slate-700/50 bg-slate-900/60 p-6">
-          <p className="text-slate-300 text-sm font-semibold uppercase tracking-wide mb-3">
-            We'll use
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {breakdown.techStack.map((t) => (
-              <span
-                key={t}
-                className="px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-300 text-xs font-medium"
-              >
-                {t}
-              </span>
-            ))}
-          </div>
-        </div>
+       
 
         {/* Standard vs Express compare */}
         <div className="rounded-2xl border border-slate-700/50 bg-slate-900/60 p-5 text-sm">

@@ -1,4 +1,3 @@
-// app/terms/page.tsx
 import LegalLayout from '@/components/LegalLayout';
 
 export default function TermsPage() {

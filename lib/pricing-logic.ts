@@ -1,4 +1,15 @@
-// lib/pricing-logic.ts
+export interface DBPricingConfig {
+  id:          string;
+  serviceId:   string;
+  serviceType:  string;
+  baseRate:     number;
+  unitCost:     number;
+  unitMax:      number;
+  label:        string;
+  unitLabel:    string;
+  multipliers:  Record<string, number>;
+}
+
 
 export type ServiceType = "web_app" | "mobile_app" | "cloud_cyber" | "digital_marketing";
 export type Timeline    = "standard" | "express";
@@ -78,7 +89,6 @@ export interface MarketingConfig {
 
 export type PricingConfig = WebAppConfig | CloudConfig | MarketingConfig;
 
-// ─── Output shape ─────────────────────────────────────────────────────────────
 export interface PricingBreakdown {
   base:       number;
   units:      number;
@@ -90,49 +100,58 @@ export interface PricingBreakdown {
   techStack:  string[];
 }
 
-// ─── Calculator ───────────────────────────────────────────────────────────────
-export function calculatePrice(config: PricingConfig): PricingBreakdown {
+export function calculatePriceDynamic(
+  config:      PricingConfig,
+  dbConfigs:   DBPricingConfig[],
+): PricingBreakdown {
+  const db = dbConfigs.find((d) => d.serviceType === config.serviceType);
+
+  // Fall back to static if DB config not loaded yet
+if (!db) {
   const base = BASE_RATES[config.serviceType];
+  return {
+    base,
+    units:      0,
+    features:   0,
+    subtotal:   base,
+    multiplier: 1,
+    total:      base,
+    label:      SERVICE_LABELS[config.serviceType],
+    techStack:  [],
+  };
+}
+  const M = db.multipliers;
+  const base = db.baseRate;
 
   if (config.serviceType === "web_app" || config.serviceType === "mobile_app") {
-    const c          = config as WebAppConfig;
-    const units      = c.pages * PER_PAGE_COST;
-    const features   = (c.hasAuth ? MULTIPLIERS.hasAuth : 0)
-                     + (c.hasPayments ? MULTIPLIERS.hasPayments : 0);
+    const c        = config as WebAppConfig;
+    const units    = c.pages * db.unitCost;
+    const features = (c.hasAuth     ? (M.hasAuth     ?? 400) : 0)
+                   + (c.hasPayments ? (M.hasPayments ?? 600) : 0);
     const subtotal   = base + units + features;
-    const multiplier = MULTIPLIERS[c.backend] * MULTIPLIERS[c.timeline];
+    const multiplier = (M[c.backend] ?? 1) * (M[c.timeline] ?? 1);
     const total      = Math.round(subtotal * multiplier);
-    return {
-      base, units, features, subtotal, multiplier, total,
-      label:     config.serviceType === "web_app" ? "Web Application" : "Mobile Application",
-      techStack: buildWebStack(c),
-    };
+    return { base, units, features, subtotal, multiplier, total,
+             label: db.label, techStack: buildWebStack(c) };
   }
 
   if (config.serviceType === "cloud_cyber") {
     const c          = config as CloudConfig;
-    const units      = c.servers * PER_SERVER_COST;
+    const units      = c.servers * db.unitCost;
     const subtotal   = base + units;
-    const multiplier = MULTIPLIERS[c.compliance] * MULTIPLIERS[c.auditFrequency] * MULTIPLIERS[c.timeline];
+    const multiplier = (M[c.compliance] ?? 1) * (M[c.auditFrequency] ?? 1) * (M[c.timeline] ?? 1);
     const total      = Math.round(subtotal * multiplier);
-    return {
-      base, units, features: 0, subtotal, multiplier, total,
-      label:     "Cloud & Cybersecurity",
-      techStack: buildCloudStack(c),
-    };
+    return { base, units, features: 0, subtotal, multiplier, total,
+             label: db.label, techStack: buildCloudStack(c) };
   }
 
-  // digital_marketing
   const c          = config as MarketingConfig;
-  const units      = c.platforms * 150;
+  const units      = c.platforms * db.unitCost;
   const subtotal   = base + units;
-  const multiplier = MULTIPLIERS[c.adSpend] * MULTIPLIERS[c.contentFreq] * MULTIPLIERS[c.timeline];
+  const multiplier = (M[c.adSpend] ?? 1) * (M[c.contentFreq] ?? 1) * (M[c.timeline] ?? 1);
   const total      = Math.round(subtotal * multiplier);
-  return {
-    base, units, features: 0, subtotal, multiplier, total,
-    label:     "Digital Marketing",
-    techStack: buildMarketingStack(c),
-  };
+  return { base, units, features: 0, subtotal, multiplier, total,
+           label: db.label, techStack: buildMarketingStack(c) };
 }
 
 // ─── Tech-stack helpers ───────────────────────────────────────────────────────

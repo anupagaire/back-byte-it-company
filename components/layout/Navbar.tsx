@@ -22,7 +22,6 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
 
-  // ✅ optimized scroll listener
   useEffect(() => {
     let ticking = false;
 

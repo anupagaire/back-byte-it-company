@@ -1,15 +1,11 @@
 "use server";
-// ─────────────────────────────────────────────────────────────────────────────
-// Server Actions:  saveLead + generatePDF
-// ─────────────────────────────────────────────────────────────────────────────
 
 import { PrismaClient } from "@prisma/client";
-import { calculatePrice, PricingConfig } from "@/lib/pricing-logic";
+import { calculatePriceDynamic as calculatePrice, PricingConfig, DBPricingConfig } from "@/lib/pricing-logic";
 import { generateProposalPDF }           from "@/lib/generate-pdf";
 
 const prisma = new PrismaClient();
 
-// ─── Input type ───────────────────────────────────────────────────────────────
 export interface LeadFormData {
   name:    string;
   email:   string;
@@ -17,15 +13,13 @@ export interface LeadFormData {
   phone?:  string;
 }
 
-// ─── Save lead + return PDF as base64 ────────────────────────────────────────
 export async function submitPricingLead(
   lead:   LeadFormData,
   config: PricingConfig,
 ): Promise<{ success: boolean; pdfBase64?: string; error?: string }> {
   try {
-    const breakdown = calculatePrice(config);
-
-    // Build the Prisma create payload dynamically based on service type
+    const dbConfigs: DBPricingConfig[] = await (prisma as any).pricingConfig.findMany();
+    const breakdown = calculatePrice(config, dbConfigs);
     const basePayload = {
       name:           lead.name,
       email:          lead.email,
@@ -75,7 +69,6 @@ export async function submitPricingLead(
   }
 }
 
-// ─── Admin: list all leads ────────────────────────────────────────────────────
 export async function getPricingLeads(page = 1, limit = 20) {
   const skip = (page - 1) * limit;
   const [leads, total] = await Promise.all([
@@ -89,7 +82,6 @@ export async function getPricingLeads(page = 1, limit = 20) {
   return { leads, total, pages: Math.ceil(total / limit) };
 }
 
-// ─── Admin: update lead status ────────────────────────────────────────────────
 export async function updateLeadStatus(id: string, status: string, notes?: string) {
   return (prisma as any).pricingLead.update({
     where: { id },
@@ -97,12 +89,10 @@ export async function updateLeadStatus(id: string, status: string, notes?: strin
   });
 }
 
-// ─── Admin: delete lead ───────────────────────────────────────────────────────
 export async function deletePricingLead(id: string) {
   return (prisma as any).pricingLead.delete({ where: { id } });
 }
 
-// ─── Admin: stats ─────────────────────────────────────────────────────────────
 export async function getPricingStats() {
   const [total, byService, byStatus, revenue] = await Promise.all([
     (prisma as any).pricingLead.count(),

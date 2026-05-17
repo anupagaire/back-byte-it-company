@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { title, category, tech, desc, published, githubUrl, liveUrl } = body;
+    const { title, category, tech, desc, published } = body;
 
     if (!title || !category || !desc) {
       return NextResponse.json({ error: 'title, category, and desc are required' }, { status: 400 });
@@ -29,8 +29,6 @@ export async function POST(req: NextRequest) {
         tech: tech || [],
         desc,
         published: published ?? true,
-        githubUrl: githubUrl || null,
-        liveUrl: liveUrl || null,
       },
     });
 

@@ -1,4 +1,3 @@
-// app/cookies/page.tsx
 import LegalLayout from '@/components/LegalLayout';
 
 export default function CookiePage() {

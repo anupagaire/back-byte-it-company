@@ -47,7 +47,6 @@ export default function Services() {
     <section className="py-12 bg-[#f8fafc]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Header */}
         <div className="text-center mb-14">
           <h2 className="text-4xl sm:text-5xl font-black text-[#1a2744] mb-4">
             Services Built for

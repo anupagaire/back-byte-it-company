@@ -6,7 +6,7 @@ function ServiceIcon({ icon, color }: { icon: string; color: string }) {
   const cls = `w-8 h-8`;
   const style = { color };
 
-  const icons: Record<string, JSX.Element> = {
+  const icons: Record<string, React.ReactNode> = {
     Code2: (
       <svg className={cls} style={style} fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />

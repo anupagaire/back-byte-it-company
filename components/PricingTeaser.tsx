@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { BASE_RATES, UNIT_COST } from "@/lib/pricing-logic";
-
+import { ServiceType } from "@/lib/pricing-logic";
 interface DBService {
   id:        string;
   title:     string;
@@ -23,7 +23,6 @@ interface TeaserService {
   color:     string;
 }
 
-// ─── These stay local — not in pricing-logic ──────────────────────────────────
 const UNIT_LABELS: Record<string, string> = {
   web_app:           "pages",
   mobile_app:        "screens",
@@ -38,7 +37,7 @@ const UNIT_MAX: Record<string, number> = {
   digital_marketing: 8,
 };
 
-function mapServiceType(title: string): string {
+function mapServiceType(title: string): ServiceType {
   const t = title.toLowerCase();
   if (t.includes("mobile") || t.includes("flutter") || t.includes("android") || t.includes("ios"))
     return "mobile_app";
@@ -187,7 +186,7 @@ export default function PricingTeaser() {
           {svc && (
             <div className="rounded-xl bg-slate-800/50 border border-slate-700/40 p-5 mb-6 space-y-4">
               <div className="flex items-center gap-3">
-                <span className=" text-xs w-20 flex-shrink-0 capitalize">
+                <span className=" text-xs w-20  capitalize">
                   {svc.unitLabel}
                 </span>
                 <input
@@ -203,7 +202,7 @@ export default function PricingTeaser() {
               </div>
 
               <div className="flex items-center gap-3">
-                <span className="text-xs w-20 flex-shrink-0">Timeline</span>
+                <span className="text-xs w-20 ">Timeline</span>
                 <input
                   type="range"
                   min={0} max={1} step={1}
