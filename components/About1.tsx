@@ -2,18 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-import {
-  CheckCircle,
-  Globe,
-  Award,
-  Users,
-} from 'lucide-react';
+import { CheckCircle,Globe,Award,Users,} from 'lucide-react';
 import Image from 'next/image';
 const stats = [
-  { number: 85, suffix: '+', label: 'Projects Delivered', icon: CheckCircle },
+  { number: 65, suffix: '+', label: 'Projects Delivered', icon: CheckCircle },
   { number: 42, suffix: '', label: 'Happy Clients', icon: Users },
-  { number: 12, suffix: '', label: 'Countries Served', icon: Globe },
-  { number: 7, suffix: '+', label: 'Years Experience', icon: Award },
+  { number: 7, suffix: '', label: 'Countries Served', icon: Globe },
+  { number: 1, suffix: '+', label: 'Years Experience', icon: Award },
 ];
 
 const highlights = [
@@ -57,16 +52,13 @@ export default function About() {
   return (
     <section id="about" className="py-8 bg-gray-50 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
-        {/* Top: two column */}
-        <div className="grid md:grid-cols-2 gap-16 items-center mb-24">
-          {/* Left */}
+    <div className="grid md:grid-cols-2 gap-16 items-center mb-24">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
           >
-            
             <h2 className="text-5xl font-black text-[#1a2744] leading-tight mb-6">
               We don't just build software.
               <br />
@@ -99,7 +91,6 @@ export default function About() {
             </ul>
           </motion.div>
 
-          {/* Right: visual */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -107,12 +98,9 @@ export default function About() {
             transition={{ duration: 0.7 }}
             className="relative"
           >
-            {/* Decorative background shape */}
             <div className="absolute -top-10 -right-10 w-64 h-64 rounded-full bg-[#69c8e4]/10 blur-3xl" />
-            <div className="absolute -bottom-10 -left-10 w-48 h-48 rounded-full bg-[#505f88]/10 blur-3xl" />
-
-                 
-                    <Image src="/team.png" alt="Team" width={300} height={200} className="object-cover rounded-lg mt-4 mx-auto" />
+            <div className="absolute -bottom-10 -left-10 w-48 h-48 rounded-full bg-[#505f88]/10 blur-3xl" />               
+ <Image src="/team.png" alt="Team" width={300} height={200} className="object-cover rounded-lg mt-4 mx-auto" />
 
             {/* Floating badge */}
             <motion.div

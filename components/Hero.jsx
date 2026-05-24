@@ -1,4 +1,5 @@
 import styles from "./AboutHero.module.css";
+import Link from "next/link";
 
 export default function AboutHero() {
   return (
@@ -46,34 +47,24 @@ export default function AboutHero() {
         />
       </svg>
 
-     
-
-      {/* ── HERO GRID ── */}
-      <div className="relative z-10 grid grid-cols-2 items-center h-[calc(100vh-74px)] px-12 gap-10 max-w-7xl mx-auto">
-
-        {/* LEFT */}
+<div className="relative z-10 grid grid-cols-2 items-center h-[calc(100vh-74px)] px-12 gap-10 max-w-7xl mx-auto">
         <div className="max-w-[460px]">
           <div className="flex items-start gap-4">
-            
             <h1 className={styles.heading}>Smart Solutions for a Digital Future</h1>
           </div>
           <p className={styles.bodyText}>
             Back Byte Technology delivers cutting-edge web, mobile, and software solutions designed to transform your ideas into reality.
           </p>
-          <button className={styles.btnRead}>Get Started</button>
+        <Link href="/services">  <button className={styles.btnRead}>Get Started</button></Link>
         </div>
 
-        {/* RIGHT — CIRCLES */}
         <div className="relative flex justify-center items-center h-full">
-
-          {/* Floating dots */}
           <span className={`${styles.dot} ${styles.d1}`} />
           <span className={`${styles.dot} ${styles.d2}`} />
           <span className={`${styles.dot} ${styles.d3}`} />
           <span className={`${styles.dot} ${styles.d4}`} />
           <span className={`${styles.dot} ${styles.d5}`} />
 
-          {/* MAIN CIRCLE */}
           <div className={styles.circleMain}>
             <svg viewBox="0 0 290 290" xmlns="http://www.w3.org/2000/svg" className="w-full">
               <rect x="80" y="170" width="130" height="120" rx="18" fill="#4a3fa0" />
@@ -88,7 +79,6 @@ export default function AboutHero() {
             </svg>
           </div>
 
-          {/* TOP-RIGHT CIRCLE */}
           <div className={styles.circleTop}>
             <svg viewBox="0 0 148 148" xmlns="http://www.w3.org/2000/svg" className="w-full">
               <rect x="30" y="88" width="88" height="70" rx="14" fill="#e07b32" />
@@ -102,7 +92,6 @@ export default function AboutHero() {
             </svg>
           </div>
 
-          {/* BOTTOM-RIGHT CIRCLE */}
           <div className={styles.circleBot}>
             <svg viewBox="0 0 162 162" xmlns="http://www.w3.org/2000/svg" className="w-full">
               <rect x="36" y="96" width="90" height="76" rx="14" fill="#f5a623" />

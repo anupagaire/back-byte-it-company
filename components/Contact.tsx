@@ -31,30 +31,36 @@ export default function Contact() {
     setForm((prev) => ({ ...prev, [field]: value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          message: form.message,
-        }),
-      });
-      if (res.ok) {
-        toast.success("Message sent! We'll respond within 24 hours. 🎉");
-        setForm({ name: '', email: '', company: '', service: '', message: '' });
-      } else {
-        toast.error("Something went wrong. Please try again.");
-      }
-    } catch {
-      toast.error("Network error. Please try again.");
-    } finally {
-      setLoading(false);
+  e.preventDefault();
+  setLoading(true);
+  try {
+    const res = await fetch('/api/contact/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: form.name,
+        email: form.email,
+        company: form.company,
+        service: form.service,
+        message: form.message,
+      }),
+    });
+
+    const data = await res.json();
+    console.log('Response:', data);
+
+    if (res.ok) {
+      toast.success("Message sent! We'll respond within 24 hours. 🎉");
+      setForm({ name: '', email: '', company: '', service: '', message: '' });
+    } else {
+      toast.error("Something went wrong. Please try again.");
     }
-  };
+  } catch {
+    toast.error("Network error. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const inputClass =
     'w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3.5 text-[#1a2744] placeholder-gray-400 focus:outline-none focus:border-[#69c8e4] focus:ring-2 focus:ring-[#69c8e4]/20 transition-all duration-200 text-sm font-medium';

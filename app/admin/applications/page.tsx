@@ -58,10 +58,12 @@ export default function AdminApplications() {
     fetchApplications();
   };
 
-  const downloadResume = (publicId: string, name: string) => {
-    window.open(`/api/download-resume?publicId=${encodeURIComponent(publicId)}&name=${encodeURIComponent(name)}`, '_blank');
-  };
-
+  // const downloadResume = (publicId: string, name: string) => {
+  //   window.open(`/api/download-resume?publicId=${encodeURIComponent(publicId)}&name=${encodeURIComponent(name)}`, '_blank');
+  // };
+const openResume = (url: string) => {
+  window.open(url, '_blank');
+};
   if (loading) {
     return <div className="p-6 md:p-10">Loading applications...</div>;
   }
@@ -146,8 +148,7 @@ export default function AdminApplications() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => downloadResume(app.resumePublicId!, app.name)}
-                          className="flex items-center gap-2"
+onClick={() => openResume(app.resumeUrl!)}                          className="flex items-center gap-2"
                         >
                           <Download className="w-4 h-4" />
                           Download CV
@@ -221,7 +222,7 @@ export default function AdminApplications() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => downloadResume(app.resumePublicId!, app.name)}
+                      onClick={() => openResume(app.resumeUrl!)}
                       className="flex items-center gap-1.5 h-9 text-xs shrink-0"
                     >
                       <Download className="w-3.5 h-3.5" />

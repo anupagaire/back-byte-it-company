@@ -8,24 +8,26 @@ import {
   Mail, 
   Briefcase, 
   Settings, 
-  Users, 
+  Users, Sliders, Download,MessageSquare,Calculator,Folder,
   X 
 } from 'lucide-react';
 
 const items = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-  { name: 'Services', href: '/admin/services', icon: Mail },
-  { name: 'Contacts', href: '/admin/contact', icon: Mail }, 
-   { name: 'Testimonials', href: '/admin/testimonials', icon: Mail },
+    { name: 'Applications', href: '/admin/applications', icon: Download },
+
+  { name: 'Services', href: '/admin/services', icon: Sliders },
 
   { name: 'Careers', href: '/admin/careers', icon: Briefcase },
-  { name: 'Projects', href: '/admin/projects', icon: Briefcase },
-  { name: 'Teams', href: '/admin/team', icon: Users },
+  { name: 'Projects', href: '/admin/projects', icon: Folder },
+  { name: 'Team Members', href: '/admin/team', icon: Users },
   { name: 'Pricing', href: '/admin/pricing-leads', icon: Briefcase },
-    { name: 'Pricing Calculate', href: '/admin/pricing-config', icon: Briefcase },
+    { name: 'Pricing Calculate', href: '/admin/pricing-config', icon: Calculator },
+   { name: 'Testimonials', href: '/admin/testimonials', icon: MessageSquare },
 
 
-  { name: 'Applications', href: '/admin/applications', icon: Users },
+    { name: 'Contacts', href: '/admin/contact', icon: Mail }, 
+
   { name: 'Settings', href: '/admin/settings', icon: Settings },
 ];
 
